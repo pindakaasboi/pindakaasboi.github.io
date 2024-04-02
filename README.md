@@ -1,2 +1,0 @@
-# pindakaasboi.github.io
-PrankSiteHaha
