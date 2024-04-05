@@ -1,23 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <script src="http://code.onion.com/fartscroll.js"></script>
-    fartscroll(5);
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>joel.nl</title>
-    <link rel="stylesheet" href="./style.css">
-    <link rel="icon" href="./favicon.ico" type="image/x-icon">
+    <title>Prank Website</title>
     <style>
-    h1 {text-align: center;}
-    <style>
-  </head>
-  <body>
-    <main>
-        <h1>welkom bij mijn website</h1>
-	    <h2>oke dus als eerste<h2>
-    </main>
-	<script src="index.js"></script>
-  </body>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .header {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+        }
+        .content {
+            padding: 20px;
+        }
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Welcome to our Prank Website!</h1>
+    </div>
+    <div class="content">
+        <h2>Click the button below to trigger the prank:</h2>
+        <button class="button" onclick="triggerPrank()">Click Me!</button>
+        <div id="prankMessage" style="display:none; margin-top:20px;">
+            <h3>Gotcha! You've been pranked!</h3>
+            <p>This is where you can put your prank content. It could be a funny message, a joke, or anything you like!</p>
+        </div>
+    </div>
+
+    <script>
+        function triggerPrank() {
+            var prankMessage = document.getElementById('prankMessage');
+            prankMessage.style.display = 'block';
+        }
+    </script>
+</body>
 </html>
+
