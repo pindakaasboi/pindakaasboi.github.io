@@ -39,6 +39,17 @@
 </div>
 
 <script>
+    var socket = new WebSocket("ws://localhost:8080"); // Replace with your server's WebSocket endpoint
+
+    socket.onmessage = function(event) {
+        var data = JSON.parse(event.data);
+        var chatWindow = document.getElementById("chat-window");
+        var messageElement = document.createElement("p");
+        messageElement.textContent = data.name + ": " + data.message;
+        chatWindow.appendChild(messageElement);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    };
+
     function sendMessage() {
         var nameInput = document.getElementById("name");
         var messageInput = document.getElementById("message");
@@ -51,13 +62,12 @@
             return;
         }
 
-        var chatWindow = document.getElementById("chat-window");
-        var messageElement = document.createElement("p");
-        messageElement.textContent = name + ": " + message;
-        chatWindow.appendChild(messageElement);
+        var messageData = {
+            name: name,
+            message: message
+        };
 
-        // Scroll chat window to bottom
-        chatWindow.scrollTop = chatWindow.scrollHeight;
+        socket.send(JSON.stringify(messageData));
 
         // Clear message input
         messageInput.value = "";
