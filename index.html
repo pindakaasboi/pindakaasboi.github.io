@@ -1,0 +1,2618 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aan Tafel — bord &amp; recepten</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --counter:#2b2420;
+    --counter-2:#352c25;
+    --plate:#f6f1e7;
+    --plate-rim:#e3dac5;
+    --plate-shadow: rgba(0,0,0,.45);
+    --ink:#2b2420;
+    --paper:#f6f1e7;
+    --muted: rgba(246,241,231,.62);
+    --muted-2: rgba(43,36,32,.55);
+    --sage:#8a9a63;
+    --sage-deep:#5f6f3f;
+    --clay:#c1592f;
+    --clay-deep:#8f3f1f;
+    --sky:#5c8a9c;
+    --sky-deep:#3c6270;
+    --wheat:#c79a3e;
+    --wheat-deep:#93701f;
+    --line: rgba(246,241,231,.14);
+    --line-strong: rgba(246,241,231,.24);
+    --radius-lg: 22px;
+    --radius-md: 14px;
+    --radius-sm: 9px;
+    --shadow-soft: 0 18px 40px -18px rgba(0,0,0,.55);
+    --ease: cubic-bezier(.22,.9,.32,1);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse 120% 80% at 50% -10%, rgba(255,255,255,.05), transparent 60%),
+      repeating-linear-gradient(100deg, var(--counter) 0px, var(--counter) 2px, var(--counter-2) 2px, var(--counter-2) 4px),
+      var(--counter);
+    color:var(--paper);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--sage); color:var(--counter);}
+  button{font-family:inherit;}
+  :focus-visible{outline:2px solid var(--sky); outline-offset:3px; border-radius:6px;}
+
+  .app{
+    max-width:1180px;
+    margin:0 auto;
+    padding:24px 20px 80px;
+  }
+
+  /* ---------- HEADER / NAV ---------- */
+  header.top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+    margin-bottom:30px;
+    padding-bottom:20px;
+    border-bottom:1px solid var(--line);
+  }
+  .brand-mark{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:none;
+    border:none;
+    cursor:pointer;
+    color:var(--paper);
+    padding:0;
+  }
+  .brand-mark .mk{
+    font-size:22px;
+    filter:drop-shadow(0 3px 4px rgba(0,0,0,.4));
+  }
+  .brand-mark .tx{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:19px;
+    letter-spacing:-.01em;
+  }
+  .brand-mark .tx em{ font-style:italic; font-weight:500; color:var(--wheat); }
+
+  .nav-tabs{
+    display:flex;
+    gap:4px;
+    background:rgba(0,0,0,.2);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:4px;
+  }
+  .nav-tab{
+    border:none;
+    background:transparent;
+    color:var(--muted);
+    padding:9px 18px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    transition:background .2s var(--ease), color .2s var(--ease);
+    white-space:nowrap;
+  }
+  .nav-tab:hover{ color:var(--paper); }
+  .nav-tab.active{
+    background:linear-gradient(180deg, var(--sage), var(--sage-deep));
+    color:#fbfaf5;
+    box-shadow:0 6px 16px -6px rgba(138,154,99,.6);
+  }
+
+  .icon-btn{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:rgba(246,241,231,.06);
+    border:1px solid var(--line);
+    color:var(--paper);
+    padding:10px 14px;
+    border-radius:999px;
+    cursor:pointer;
+    font-size:13px;
+    font-weight:500;
+    transition:background .2s var(--ease), border-color .2s var(--ease), transform .15s var(--ease);
+    white-space:nowrap;
+  }
+  .icon-btn:hover{ background:rgba(246,241,231,.12); border-color:var(--line-strong); transform:translateY(-1px);}
+  .key-dot{width:7px;height:7px;border-radius:50%;background:var(--clay); flex:none;}
+  .key-dot.ok{background:var(--sage);}
+
+  .header-actions{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+
+  .icon-btn.premium-btn{
+    background:linear-gradient(180deg, rgba(199,154,62,.22), rgba(199,154,62,.1));
+    border-color:rgba(199,154,62,.45);
+    color:#efe2c2;
+  }
+  .icon-btn.premium-btn:hover{ background:linear-gradient(180deg, rgba(199,154,62,.32), rgba(199,154,62,.16)); border-color:var(--wheat); }
+
+  .mode-switch{
+    display:flex;
+    gap:2px;
+    background:rgba(0,0,0,.2);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:3px;
+  }
+  .mode-btn{
+    border:none;
+    background:transparent;
+    color:var(--muted);
+    width:34px; height:30px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:999px;
+    font-size:14px;
+    cursor:pointer;
+    transition:background .2s var(--ease), color .2s var(--ease);
+  }
+  .mode-btn:hover{ color:var(--paper); }
+  .mode-btn.active{
+    background:linear-gradient(180deg, var(--sky), var(--sky-deep));
+    color:#fbfaf5;
+    box-shadow:0 6px 14px -6px rgba(92,138,156,.6);
+  }
+
+  /* ---------- VIEWS ---------- */
+  .view{ display:none; }
+  .view.active{ display:block; animation:view-in .45s var(--ease); }
+  @keyframes view-in{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+
+  /* ---------- HOME ---------- */
+  .home-hero{
+    text-align:center;
+    max-width:600px;
+    margin:24px auto 46px;
+  }
+  .home-hero .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--sage);
+    margin:0 0 12px;
+  }
+  .home-hero h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(38px,6vw,58px);
+    line-height:1.02;
+    margin:0 0 16px;
+    letter-spacing:-.01em;
+  }
+  .home-hero h1 em{ font-style:italic; font-weight:500; color:var(--wheat); }
+  .home-hero p{ margin:0; color:var(--muted); font-size:15.5px; line-height:1.6; }
+
+  .nav-cards{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    max-width:920px;
+    margin:0 auto;
+  }
+  @media (max-width:700px){ .nav-cards{ grid-template-columns:1fr; } }
+
+  .nav-card{
+    position:relative;
+    overflow:hidden;
+    text-align:left;
+    background:rgba(0,0,0,.2);
+    border:1px solid var(--line);
+    border-radius:var(--radius-lg);
+    padding:34px 28px;
+    cursor:pointer;
+    transition:transform .25s var(--ease), border-color .2s var(--ease), background .2s var(--ease);
+  }
+  .nav-card:hover{ transform:translateY(-5px); border-color:var(--line-strong); background:rgba(0,0,0,.28); }
+  .nav-card::before{
+    content:"";
+    position:absolute;
+    width:180px; height:180px;
+    border-radius:50%;
+    top:-70px; right:-70px;
+    filter:blur(10px);
+    opacity:.25;
+    transition:opacity .25s var(--ease), transform .25s var(--ease);
+  }
+  .nav-card:hover::before{ opacity:.4; transform:scale(1.08); }
+  .nav-card.bord::before{ background:var(--sage); }
+  .nav-card.recepten::before{ background:var(--wheat); }
+  .nav-card .emo{ font-size:42px; display:block; margin-bottom:16px; position:relative; }
+  .nav-card h3{ font-family:'Fraunces', serif; font-size:24px; font-weight:600; margin:0 0 8px; position:relative; }
+  .nav-card p{ color:var(--muted); font-size:13.5px; line-height:1.6; margin:0 0 18px; position:relative; max-width:34ch; }
+  .nav-card .cta{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    display:flex; align-items:center; gap:7px;
+    position:relative;
+  }
+  .nav-card.bord .cta{ color:var(--sage); }
+  .nav-card.recepten .cta{ color:var(--wheat); }
+  .nav-card .cta svg{ width:13px; height:13px; transition:transform .2s var(--ease); }
+  .nav-card:hover .cta svg{ transform:translateX(4px); }
+
+  .home-note{
+    text-align:center;
+    margin-top:46px;
+    font-size:12.5px;
+    color:var(--muted-2);
+  }
+
+  /* ---------- SECTION INTROS ---------- */
+  .section-intro{
+    margin-bottom:26px;
+  }
+  .section-intro .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--sage);
+    margin:0 0 8px;
+  }
+  .section-intro h2{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(26px,4vw,36px);
+    margin:0 0 8px;
+    letter-spacing:-.01em;
+  }
+  .section-intro h2 em{ font-style:italic; font-weight:500; color:var(--wheat); }
+  .section-intro p{ margin:0; max-width:52ch; color:var(--muted); font-size:14px; line-height:1.55; }
+
+  /* ---------- MAIN LAYOUT (plate view) ---------- */
+  main.layout{
+    display:grid;
+    grid-template-columns: 240px 1fr 260px;
+    gap:28px;
+    align-items:start;
+  }
+  @media (max-width: 1060px){
+    main.layout{ grid-template-columns: 220px 1fr; }
+    .side-widgets{ display:none; }
+  }
+  @media (max-width: 860px){
+    main.layout{ grid-template-columns:1fr; }
+  }
+
+  /* ---------- SIDE WIDGETS (desktop only) ---------- */
+  .side-widgets{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  .widget-card{
+    background:rgba(0,0,0,.18);
+    border:1px solid var(--line);
+    border-radius:var(--radius-lg);
+    padding:16px 16px 18px;
+  }
+  .widget-card h3{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin:0 0 12px;
+    font-weight:600;
+  }
+  .pie-wrap{ display:flex; align-items:center; gap:14px; }
+  .pie-chart{
+    width:74px; height:74px; border-radius:50%; flex:none;
+    background:conic-gradient(var(--line-strong) 0deg 360deg);
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.2);
+    transition:background .4s var(--ease);
+  }
+  .pie-legend{ display:flex; flex-direction:column; gap:6px; flex:1; min-width:0; }
+  .pie-legend .leg-row{ display:flex; align-items:center; gap:7px; font-size:11.5px; color:var(--muted); }
+  .pie-legend .leg-swatch{ width:8px; height:8px; border-radius:2px; flex:none; }
+  .pie-legend .leg-pct{ margin-left:auto; font-family:'JetBrains Mono', monospace; color:var(--paper); }
+  .pie-empty{ font-size:11.5px; color:var(--muted-2); line-height:1.5; }
+
+  .stat-list{ list-style:none; margin:0; padding:0; }
+  .stat-list li{
+    display:flex; justify-content:space-between; gap:10px;
+    padding:7px 0;
+    border-bottom:1px solid rgba(255,255,255,.06);
+    font-size:12.5px;
+    color:var(--muted);
+  }
+  .stat-list li:last-child{ border-bottom:none; }
+  .stat-list li span:last-child{ color:var(--paper); font-weight:600; text-align:right; }
+
+  .widget-card.premium-teaser{
+    background:linear-gradient(160deg, rgba(199,154,62,.14), rgba(199,154,62,.04));
+    border-color:rgba(199,154,62,.4);
+  }
+  .widget-card.premium-teaser h3{ color:#dcc48f; }
+  .widget-card.premium-teaser p{ margin:0 0 12px; font-size:12.5px; line-height:1.55; color:var(--muted); }
+  .widget-card.premium-teaser .btn-ghost{ width:100%; justify-content:center; border-color:rgba(199,154,62,.45); color:#efe2c2; }
+  .widget-card.premium-teaser .btn-ghost:hover{ border-color:var(--wheat); }
+
+  /* ---------- DOCK (ingredients) ---------- */
+  .dock{
+    background:rgba(0,0,0,.18);
+    border:1px solid var(--line);
+    border-radius:var(--radius-lg);
+    padding:18px 16px 20px;
+  }
+  .dock h2{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin:0 0 6px;
+    font-weight:600;
+  }
+  .dock .dock-hint{
+    font-size:11.5px;
+    color:var(--muted-2);
+    margin:0 0 14px;
+    line-height:1.5;
+  }
+  .cat-block{ margin-bottom:16px; }
+  .cat-block:last-child{ margin-bottom:0; }
+  .cat-label{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    font-weight:600;
+    margin:0 0 9px;
+  }
+  .cat-swatch{ width:8px;height:8px;border-radius:2px; flex:none;}
+  .cat-groenten .cat-swatch,.cat-groenten{color:var(--sage);}
+  .cat-fruit .cat-swatch,.cat-fruit{color:var(--sky);}
+  .cat-granen .cat-swatch,.cat-granen{color:var(--wheat);}
+  .cat-eiwit .cat-swatch,.cat-eiwit{color:var(--clay);}
+  .cat-swatch{background:currentColor;}
+
+  .chips{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+  .chip{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background:rgba(246,241,231,.05);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:6px 11px 6px 8px;
+    cursor:pointer;
+    touch-action:none;
+    user-select:none;
+    font-size:12.5px;
+    color:var(--paper);
+    transition:background .15s var(--ease), border-color .15s var(--ease), transform .12s var(--ease);
+  }
+  .chip:hover{ background:rgba(246,241,231,.1); border-color:var(--line-strong); transform:translateY(-1px);}
+  .chip:active{ cursor:grabbing; }
+  .chip .emo{ font-size:16px; line-height:1; }
+  .chip.dragging{ opacity:.35; }
+  .chip.new-chip{ animation:chip-pop .6s var(--ease); }
+  @keyframes chip-pop{
+    0%{ transform:scale(.5); box-shadow:0 0 0 0 rgba(138,154,99,.6); }
+    50%{ transform:scale(1.12); box-shadow:0 0 0 6px rgba(138,154,99,.25); }
+    100%{ transform:scale(1); box-shadow:0 0 0 0 rgba(138,154,99,0); }
+  }
+
+  .add-chip-block{ margin-top:18px; padding-top:16px; border-top:1px dashed var(--line); }
+  .chip.add-chip{
+    border-style:dashed;
+    border-color:rgba(199,154,62,.45);
+    color:var(--wheat);
+    width:100%;
+    justify-content:center;
+    padding:9px 11px;
+    font-weight:600;
+  }
+  .chip.add-chip:hover{ background:rgba(199,154,62,.1); border-color:var(--wheat); }
+
+  @media (max-width:860px){
+    .dock{ order:2; }
+    .chips{ flex-wrap:nowrap; overflow-x:auto; padding-bottom:4px; -webkit-overflow-scrolling:touch;}
+    .cat-block{ min-width:0; }
+  }
+
+  /* drag ghost */
+  .ghost{
+    position:fixed;
+    z-index:999;
+    pointer-events:none;
+    font-size:30px;
+    line-height:1;
+    filter:drop-shadow(0 10px 14px rgba(0,0,0,.5));
+    transform:translate(-50%,-50%) scale(1.15);
+    transition:transform .1s var(--ease);
+  }
+
+  /* ---------- PLATE SECTION ---------- */
+  .plate-section{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:22px;
+  }
+
+  .plate-wrap{
+    position:relative;
+    width:min(78vw, 440px);
+    aspect-ratio:1/1;
+    margin-top:6px;
+  }
+  .plate-wrap.drag-over .plate{
+    transform:scale(1.035);
+    box-shadow:0 0 0 3px var(--sage), var(--shadow-soft);
+  }
+
+  .plate{
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    background:
+      radial-gradient(circle at 38% 32%, #ffffff 0%, var(--plate) 34%, var(--plate) 62%, var(--plate-rim) 100%);
+    box-shadow:
+      inset 0 4px 10px rgba(255,255,255,.6),
+      inset 0 -18px 30px rgba(0,0,0,.10),
+      0 24px 46px -18px rgba(0,0,0,.6),
+      0 2px 0 rgba(0,0,0,.25);
+    transition:transform .3s var(--ease), box-shadow .3s var(--ease);
+  }
+  .plate::after{
+    content:"";
+    position:absolute; inset:10%;
+    border-radius:50%;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.055);
+    pointer-events:none;
+  }
+
+  .plate-placeholder{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    text-align:center;
+    padding:20%;
+    color:var(--muted-2);
+    font-size:13.5px;
+    line-height:1.5;
+    pointer-events:none;
+    transition:opacity .25s var(--ease);
+  }
+  .plate-placeholder .icon{ font-size:22px; display:block; margin-bottom:6px; opacity:.6;}
+
+  svg.rim{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    transform:rotate(-90deg);
+    pointer-events:none;
+  }
+  svg.rim circle.track{
+    fill:none;
+    stroke: rgba(0,0,0,.18);
+    stroke-width:2.4;
+  }
+  svg.rim circle.gauge{
+    fill:none;
+    stroke-width:5;
+    stroke-linecap:round;
+    transition:stroke-dashoffset 1.3s var(--ease), stroke 0.6s var(--ease);
+  }
+  .gauge.score-good{ stroke:var(--sage); filter:drop-shadow(0 0 6px rgba(138,154,99,.55)); }
+  .gauge.score-mid{ stroke:var(--wheat); filter:drop-shadow(0 0 6px rgba(199,154,62,.5)); }
+  .gauge.score-low{ stroke:var(--clay); filter:drop-shadow(0 0 6px rgba(193,89,47,.5)); }
+
+  .token{
+    position:absolute;
+    width:15%;
+    aspect-ratio:1/1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:clamp(20px,4.6vw,30px);
+    transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scale(0);
+    animation: drop-in .45s var(--ease) forwards;
+    cursor:grab;
+    touch-action:none;
+    filter:drop-shadow(0 6px 8px rgba(0,0,0,.35));
+  }
+  @keyframes drop-in{
+    0%{ transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scale(0); }
+    65%{ transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scale(1.18); }
+    100%{ transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scale(1); }
+  }
+  .token .remove{
+    position:absolute;
+    top:-7px; right:-7px;
+    width:20px;height:20px;
+    border-radius:50%;
+    background:var(--counter);
+    color:var(--paper);
+    border:1px solid var(--line-strong);
+    font-size:11px;
+    line-height:1;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    opacity:.8;
+    transition:opacity .15s var(--ease), transform .15s var(--ease), background .15s var(--ease);
+  }
+  .token:hover .remove, .token:focus-within .remove{ opacity:1; }
+  .token .remove:hover{ background:var(--clay); transform:scale(1.15); }
+  .token-hint{
+    position:absolute;
+    bottom:-26px; left:50%;
+    transform:translateX(-50%);
+    font-size:10px;
+    color:var(--muted-2);
+    white-space:nowrap;
+    pointer-events:none;
+    opacity:0;
+    transition:opacity .2s var(--ease);
+  }
+
+  /* ---------- CONTROLS ---------- */
+  .controls{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+  .btn-primary{
+    background:linear-gradient(180deg, var(--sage), var(--sage-deep));
+    color:#fbfaf5;
+    border:none;
+    padding:14px 26px;
+    border-radius:999px;
+    font-size:14.5px;
+    font-weight:600;
+    letter-spacing:.01em;
+    cursor:pointer;
+    box-shadow:0 10px 22px -8px rgba(138,154,99,.55);
+    transition:transform .15s var(--ease), box-shadow .15s var(--ease), opacity .2s var(--ease);
+    display:flex; align-items:center; gap:9px;
+  }
+  .btn-primary:hover:not(:disabled){ transform:translateY(-2px); box-shadow:0 14px 26px -8px rgba(138,154,99,.65);}
+  .btn-primary:disabled{ opacity:.35; cursor:not-allowed; box-shadow:none; }
+  .btn-primary .spinner{
+    width:15px;height:15px;border-radius:50%;
+    border:2px solid rgba(255,255,255,.4); border-top-color:#fff;
+    animation:spin .7s linear infinite;
+    display:none;
+  }
+  .btn-primary.loading .spinner{ display:inline-block; }
+  .btn-primary.loading .txt-idle{ display:none; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  .btn-ghost{
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--muted);
+    padding:12px 18px;
+    border-radius:999px;
+    font-size:13px;
+    cursor:pointer;
+    transition:border-color .15s var(--ease), color .15s var(--ease);
+  }
+  .btn-ghost:hover{ border-color:var(--line-strong); color:var(--paper); }
+
+  .plate-wrap.pulsing .plate{
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ box-shadow: inset 0 4px 10px rgba(255,255,255,.6), inset 0 -18px 30px rgba(0,0,0,.10), 0 24px 46px -18px rgba(0,0,0,.6), 0 0 0 0 rgba(199,154,62,.0);}
+    50%{ box-shadow: inset 0 4px 10px rgba(255,255,255,.6), inset 0 -18px 30px rgba(0,0,0,.10), 0 24px 46px -18px rgba(0,0,0,.6), 0 0 0 10px rgba(199,154,62,.18);}
+  }
+
+  /* ---------- RESULTS ---------- */
+  .results{
+    width:100%;
+    max-width:820px;
+    display:none;
+    margin:0 auto;
+  }
+  .results.show{ display:block; }
+
+  .result-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+    margin-bottom:16px;
+  }
+  @media (max-width:700px){ .result-grid{ grid-template-columns:1fr; } }
+
+  .card{
+    background:rgba(0,0,0,.2);
+    border:1px solid var(--line);
+    border-radius:var(--radius-md);
+    padding:18px 18px 16px;
+    opacity:0; transform:translateY(14px);
+    animation:card-in .55s var(--ease) forwards;
+  }
+  .card:nth-child(1){ animation-delay:.05s; }
+  .card:nth-child(2){ animation-delay:.16s; }
+  .card:nth-child(3){ animation-delay:.27s; }
+  @keyframes card-in{ to{ opacity:1; transform:translateY(0);} }
+
+  .card h3{
+    margin:0 0 10px;
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    font-weight:600;
+    color:var(--muted);
+    display:flex; align-items:center; gap:7px;
+  }
+  .mini-gauge{ width:20px;height:20px; flex:none;}
+
+  .big-stat{
+    font-family:'JetBrains Mono', monospace;
+    font-size:30px;
+    font-weight:700;
+    line-height:1;
+    margin-bottom:6px;
+    display:flex; align-items:baseline; gap:4px;
+  }
+  .big-stat .unit{ font-size:14px; font-weight:500; color:var(--muted); }
+  .card p{ margin:0; font-size:13px; line-height:1.55; color:var(--muted); }
+  .card.health .big-stat{ color:var(--sage); }
+  .card.co2 .big-stat{ color:var(--clay); }
+  .card.season .big-stat{ color:var(--sky); }
+
+  .season-bar{
+    height:6px; border-radius:4px; background:rgba(255,255,255,.08);
+    overflow:hidden; margin-bottom:10px;
+  }
+  .season-bar > div{
+    height:100%; background:linear-gradient(90deg, var(--sky-deep), var(--sky));
+    width:0%; transition:width 1.1s var(--ease) .3s;
+    border-radius:4px;
+  }
+
+  .tip-note{
+    background:rgba(199,154,62,.1);
+    border:1px dashed rgba(199,154,62,.45);
+    border-radius:var(--radius-md);
+    padding:14px 16px;
+    font-size:13.5px;
+    line-height:1.55;
+    color:#efe2c2;
+    margin-bottom:18px;
+    opacity:0; transform:translateY(10px);
+    animation:card-in .55s var(--ease) .35s forwards;
+    display:flex; gap:10px;
+  }
+  .tip-note .em{ font-size:18px; flex:none; }
+
+  .breakdown{
+    border-top:1px solid var(--line);
+    padding-top:14px;
+  }
+  .breakdown h4{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin:0 0 10px;
+    font-weight:600;
+  }
+  .item-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:9px 0;
+    border-bottom:1px solid rgba(255,255,255,.06);
+    font-size:13px;
+    opacity:0; transform:translateX(-8px);
+    animation:row-in .4s var(--ease) forwards;
+  }
+  @keyframes row-in{ to{ opacity:1; transform:translateX(0);} }
+  .item-row:last-child{ border-bottom:none; }
+  .item-row .emo{ font-size:17px; width:22px; text-align:center; flex:none; }
+  .item-row .nm{ flex:1; min-width:0; }
+  .item-row .badge{
+    font-size:10.5px;
+    padding:3px 8px;
+    border-radius:999px;
+    font-weight:600;
+    letter-spacing:.02em;
+    flex:none;
+  }
+  .badge.in{ background:rgba(138,154,99,.18); color:#c3d4a2; }
+  .badge.out{ background:rgba(92,138,156,.15); color:#a9c8d4; }
+  .item-row .co2v{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--muted);
+    width:60px;
+    text-align:right;
+    flex:none;
+  }
+
+  .error-box{
+    border:1px solid rgba(193,89,47,.5);
+    background:rgba(193,89,47,.1);
+    border-radius:var(--radius-md);
+    padding:14px 16px;
+    font-size:13.5px;
+    line-height:1.5;
+    color:#f0c6b3;
+    display:flex; gap:10px; align-items:flex-start;
+    margin-top:6px;
+  }
+
+  /* ---------- MODALS (shared) ---------- */
+  .overlay{
+    position:fixed; inset:0;
+    background:rgba(10,8,6,.6);
+    backdrop-filter:blur(3px);
+    display:none;
+    align-items:center; justify-content:center;
+    z-index:1000;
+    padding:20px;
+    opacity:0;
+    transition:opacity .2s var(--ease);
+  }
+  .overlay.show{ display:flex; opacity:1; }
+  .modal{
+    width:100%; max-width:440px;
+    background:var(--counter-2);
+    border:1px solid var(--line-strong);
+    border-radius:var(--radius-lg);
+    padding:26px 26px 24px;
+    box-shadow:var(--shadow-soft);
+    transform:translateY(14px) scale(.98);
+    opacity:0;
+    animation:modal-in .3s var(--ease) forwards;
+    position:relative;
+    max-height:88vh;
+    overflow-y:auto;
+  }
+  @keyframes modal-in{ to{ transform:translateY(0) scale(1); opacity:1; } }
+  .modal h2{
+    font-family:'Fraunces', serif;
+    font-size:22px;
+    font-weight:600;
+    margin:0 0 6px;
+  }
+  .modal p.desc{ margin:0 0 18px; font-size:13px; color:var(--muted); line-height:1.55; }
+  .modal label{
+    display:block;
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:7px;
+    font-weight:600;
+  }
+  .modal input[type=password], .modal input[type=text], .modal select, .modal textarea{
+    width:100%;
+    background:rgba(0,0,0,.25);
+    border:1px solid var(--line);
+    color:var(--paper);
+    padding:11px 13px;
+    border-radius:var(--radius-sm);
+    font-size:13.5px;
+    margin-bottom:16px;
+    font-family:'JetBrains Mono', monospace;
+  }
+  .modal textarea{ resize:vertical; min-height:70px; line-height:1.5; }
+  .modal select{ font-family:'Inter',sans-serif; }
+  .modal a{ color:var(--sky); }
+  .modal-actions{ display:flex; gap:10px; margin-top:6px; }
+  .modal-actions .btn-primary{ flex:1; justify-content:center; }
+  .modal-actions .btn-ghost{ flex:none; }
+  .modal-status{ font-size:12.5px; margin:-6px 0 14px; min-height:16px; color:var(--muted); }
+  .modal-status.err{ color:#f0a082; }
+  .modal-status.ok{ color:#b7d195; }
+  .close-x{
+    position:absolute; top:16px; right:16px;
+    background:none; border:none; color:var(--muted);
+    font-size:18px; cursor:pointer; line-height:1;
+  }
+
+  .emoji-grid{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px; }
+  .emoji-opt{
+    width:42px;height:42px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:21px;
+    background:rgba(246,241,231,.05);
+    border:1px solid var(--line);
+    border-radius:10px;
+    cursor:pointer;
+    transition:transform .15s var(--ease), border-color .15s var(--ease), background .15s var(--ease);
+  }
+  .emoji-opt:hover{ transform:translateY(-2px); border-color:var(--line-strong); }
+  .emoji-opt.selected{ border-color:var(--sage); background:rgba(138,154,99,.2); box-shadow:0 0 0 2px rgba(138,154,99,.35); }
+  .emoji-custom-row{ display:flex; align-items:center; gap:10px; margin:6px 0 16px; }
+  .emoji-custom-row input{ margin:0; width:64px; text-align:center; font-size:18px; padding:8px; }
+  .emoji-custom-row span{ font-size:12px; color:var(--muted); }
+  .new-food-preview{
+    display:flex; align-items:center; gap:12px;
+    background:rgba(0,0,0,.2);
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    padding:12px 14px;
+    margin-bottom:16px;
+  }
+  .new-food-preview .pv-emo{ font-size:28px; }
+  .new-food-preview .pv-name{ font-weight:600; font-size:14.5px; }
+  .new-food-preview .pv-cat{ font-size:11.5px; color:var(--muted); }
+
+  /* ---------- PRICING (premium modal) ---------- */
+  .pricing-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
+  @media (max-width:460px){ .pricing-grid{ grid-template-columns:1fr; } }
+  .price-card{
+    border:1px solid var(--line);
+    border-radius:var(--radius-md);
+    padding:16px 15px;
+    position:relative;
+  }
+  .price-card.highlight{
+    border-color:rgba(199,154,62,.5);
+    background:linear-gradient(160deg, rgba(199,154,62,.14), rgba(199,154,62,.03));
+  }
+  .price-card .badge-pro{
+    position:absolute; top:-9px; right:14px;
+    background:linear-gradient(180deg, var(--wheat), var(--wheat-deep));
+    color:#2b2117;
+    font-size:10px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+    padding:3px 9px; border-radius:999px;
+  }
+  .price-card .tier-name{ font-weight:600; font-size:14px; margin-bottom:2px; }
+  .price-card .tier-price{ font-family:'JetBrains Mono', monospace; font-size:20px; font-weight:700; margin-bottom:10px; }
+  .price-card .tier-price span{ font-size:11px; font-weight:500; color:var(--muted); }
+  .price-card ul{ list-style:none; margin:0; padding:0; }
+  .price-card li{ font-size:12px; color:var(--muted); padding:4px 0; display:flex; gap:6px; align-items:flex-start; line-height:1.4; }
+  .price-card li .ck{ flex:none; color:var(--sage); }
+
+  /* ---------- AUTH TABS (account modal) ---------- */
+  .auth-tabs{ display:flex; gap:4px; background:rgba(0,0,0,.22); border:1px solid var(--line); border-radius:999px; padding:4px; width:fit-content; margin-bottom:18px; }
+  .auth-tab{ border:none; background:transparent; color:var(--muted); padding:8px 16px; border-radius:999px; font-size:12.5px; font-weight:600; cursor:pointer; transition:background .2s var(--ease), color .2s var(--ease); }
+  .auth-tab.active{ background:linear-gradient(180deg, var(--sky), var(--sky-deep)); color:#fbfaf5; }
+  .auth-panel{ display:none; }
+  .auth-panel.active{ display:block; }
+
+  /* ---------- RECIPES ---------- */
+  .recipe-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
+    margin-bottom:50px;
+  }
+  @media (max-width:860px){ .recipe-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:600px){ .recipe-grid{ grid-template-columns:1fr; } }
+
+  .recipe-card{
+    background:rgba(0,0,0,.2);
+    border:1px solid var(--line);
+    border-radius:var(--radius-md);
+    padding:20px;
+    transition:border-color .2s var(--ease), transform .2s var(--ease);
+  }
+  .recipe-card:hover{ border-color:var(--line-strong); transform:translateY(-3px); }
+  .recipe-card .emo{ font-size:32px; display:block; margin-bottom:10px; }
+  .recipe-card h3{ font-family:'Fraunces', serif; font-size:18px; font-weight:600; margin:0 0 8px; }
+  .recipe-card .meta{
+    display:flex; gap:12px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px; color:var(--muted);
+    margin-bottom:10px;
+  }
+  .recipe-card p.teaser{ font-size:13px; color:var(--muted); line-height:1.5; margin:0 0 12px; }
+  .expand-toggle{
+    display:flex; align-items:center; gap:6px;
+    font-size:12px; font-weight:600; color:var(--wheat);
+    cursor:pointer; user-select:none;
+  }
+  .expand-toggle .chev{ transition:transform .25s var(--ease); font-size:10px; }
+  .recipe-card.open .expand-toggle .chev{ transform:rotate(180deg); }
+  .recipe-detail{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .45s var(--ease);
+  }
+  .recipe-card.open .recipe-detail{ max-height:900px; }
+  .recipe-detail h4{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--muted); margin:14px 0 8px; font-weight:600;
+  }
+  .recipe-detail ul{ list-style:none; margin:0; padding:0; }
+  .recipe-detail li{ font-size:12.5px; padding:5px 0; border-bottom:1px dashed rgba(255,255,255,.08); }
+  .recipe-detail ol{ margin:0; padding-left:18px; font-size:12.5px; line-height:1.65; color:var(--muted); }
+  .recipe-detail ol li{ border:none; padding:3px 0; }
+
+  .gen-section{
+    background:rgba(0,0,0,.18);
+    border:1px solid var(--line);
+    border-radius:var(--radius-lg);
+    padding:26px;
+    max-width:840px;
+    margin:0 auto;
+  }
+  .gen-tabs{
+    display:flex; gap:4px;
+    background:rgba(0,0,0,.22);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:4px;
+    width:fit-content;
+    margin-bottom:20px;
+  }
+  .gen-tab{
+    border:none; background:transparent; color:var(--muted);
+    padding:9px 16px; border-radius:999px; font-size:12.5px; font-weight:600;
+    cursor:pointer; transition:background .2s var(--ease), color .2s var(--ease);
+  }
+  .gen-tab.active{ background:linear-gradient(180deg, var(--wheat), var(--wheat-deep)); color:#2b2117; }
+  .gen-panel{ display:none; }
+  .gen-panel.active{ display:block; animation:view-in .3s var(--ease); }
+  .gen-panel label{
+    display:block; font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:7px; font-weight:600;
+  }
+  .gen-panel input[type=text], .gen-panel textarea{
+    width:100%;
+    background:rgba(0,0,0,.25);
+    border:1px solid var(--line);
+    color:var(--paper);
+    padding:11px 13px;
+    border-radius:var(--radius-sm);
+    font-size:13.5px;
+    margin-bottom:14px;
+    font-family:'Inter',sans-serif;
+  }
+  .gen-panel textarea{ resize:vertical; min-height:66px; line-height:1.5; }
+  .pantry-actions{ display:flex; justify-content:flex-end; margin:-8px 0 14px; }
+  .link-btn{
+    background:none; border:none; color:var(--sky); font-size:12px;
+    cursor:pointer; font-weight:600; padding:0;
+  }
+  .link-btn:hover{ text-decoration:underline; }
+  .filter-chips{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px; }
+  .filter-chip{
+    background:rgba(246,241,231,.05); border:1px solid var(--line); color:var(--muted);
+    border-radius:999px; padding:7px 13px; font-size:12px; cursor:pointer;
+    transition:background .15s var(--ease), color .15s var(--ease), border-color .15s var(--ease);
+  }
+  .filter-chip.active{ background:rgba(138,154,99,.22); border-color:var(--sage); color:#dbe6c9; }
+
+  .gen-result{ margin-top:22px; }
+  .gen-error{ margin-top:16px; }
+  .gen-recipe-card{
+    background:rgba(0,0,0,.22);
+    border:1px solid var(--line-strong);
+    border-radius:var(--radius-md);
+    padding:22px;
+    opacity:0; transform:translateY(12px) scale(.99);
+    animation:card-in .5s var(--ease) forwards;
+  }
+  .gen-recipe-card .emo{ font-size:36px; display:block; margin-bottom:10px; }
+  .gen-recipe-card h3{ font-family:'Fraunces', serif; font-size:21px; margin:0 0 8px; }
+  .gen-recipe-card .meta{ display:flex; gap:12px; font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--muted); margin-bottom:14px; }
+  .gen-recipe-card h4{
+    font-family:'JetBrains Mono', monospace; font-size:10.5px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--muted); margin:0 0 8px; font-weight:600;
+  }
+  .gen-recipe-card ul{ list-style:none; margin:0 0 16px; padding:0; }
+  .gen-recipe-card li{ font-size:12.5px; padding:5px 0; border-bottom:1px dashed rgba(255,255,255,.08); }
+  .gen-recipe-card ol{ margin:0; padding-left:18px; font-size:12.5px; line-height:1.65; color:var(--muted); }
+  .gen-recipe-card .gen-note{
+    margin-top:16px;
+    background:rgba(199,154,62,.1);
+    border:1px dashed rgba(199,154,62,.45);
+    border-radius:var(--radius-sm);
+    padding:12px 14px;
+    font-size:13px; line-height:1.5; color:#efe2c2;
+    display:flex; gap:8px;
+  }
+  .gen-actions{ display:flex; justify-content:center; margin-top:16px; }
+
+  footer.foot{
+    text-align:center;
+    margin-top:56px;
+    font-size:11.5px;
+    color:var(--muted-2);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.001s !important; transition-duration:.001s !important; }
+  }
+
+  /* ---------- GEFORCEERDE WEERGAVE (mobiel/desktop-switch) ---------- */
+  html[data-forcemode="desktop"] main.layout{ grid-template-columns:240px 1fr 260px !important; }
+  html[data-forcemode="desktop"] .dock{ order:0 !important; }
+  html[data-forcemode="desktop"] .side-widgets{ display:flex !important; }
+  html[data-forcemode="desktop"] .nav-cards{ grid-template-columns:1fr 1fr !important; }
+  html[data-forcemode="desktop"] .recipe-grid{ grid-template-columns:repeat(3,1fr) !important; }
+  html[data-forcemode="desktop"] .result-grid{ grid-template-columns:repeat(3,1fr) !important; }
+  html[data-forcemode="desktop"] .plate-wrap{ width:min(34vw, 380px) !important; }
+  html[data-forcemode="desktop"] .app{ max-width:1180px !important; }
+
+  html[data-forcemode="mobile"] main.layout{ grid-template-columns:1fr !important; }
+  html[data-forcemode="mobile"] .dock{ order:2 !important; }
+  html[data-forcemode="mobile"] .side-widgets{ display:none !important; }
+  html[data-forcemode="mobile"] .nav-cards{ grid-template-columns:1fr !important; }
+  html[data-forcemode="mobile"] .recipe-grid{ grid-template-columns:1fr !important; }
+  html[data-forcemode="mobile"] .result-grid{ grid-template-columns:1fr !important; }
+  html[data-forcemode="mobile"] .plate-wrap{ width:min(86vw, 380px) !important; }
+  html[data-forcemode="mobile"] .app{ max-width:520px !important; }
+  html[data-forcemode="mobile"] header.top{ flex-direction:column; align-items:stretch; }
+  html[data-forcemode="mobile"] .header-actions{ justify-content:space-between; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="top">
+    <button class="brand-mark" data-view="home" type="button">
+      <span class="mk">🍽️</span>
+      <span class="tx">Aan <em>Tafel</em></span>
+    </button>
+
+    <nav class="nav-tabs" aria-label="Navigatie">
+      <button class="nav-tab" data-view="home" type="button">Home</button>
+      <button class="nav-tab" data-view="plate" type="button">Mijn bord</button>
+      <button class="nav-tab" data-view="recipes" type="button">Recepten</button>
+    </nav>
+
+    <div class="header-actions">
+      <div class="mode-switch" id="modeSwitch" role="group" aria-label="Weergave">
+        <button class="mode-btn" data-mode="desktop" type="button" title="Desktopweergave" aria-label="Desktopweergave">🖥️</button>
+        <button class="mode-btn" data-mode="mobile" type="button" title="Mobiele weergave" aria-label="Mobiele weergave">📱</button>
+      </div>
+      <button class="icon-btn premium-btn" id="premiumBtn" type="button" aria-haspopup="dialog">
+        <span>✨</span><span>Premium</span>
+      </button>
+      <button class="icon-btn" id="accountBtn" type="button" aria-haspopup="dialog">
+        <span id="accountBtnIcon">👤</span><span id="accountBtnLabel">Inloggen</span>
+      </button>
+      <button class="icon-btn" id="settingsBtn" type="button" aria-haspopup="dialog">
+        <span class="key-dot" id="keyDot"></span>
+        <span id="settingsLabel">API-sleutel instellen</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= HOME ================= -->
+  <section class="view" id="view-home">
+    <div class="home-hero">
+      <p class="eyebrow">welkom aan tafel</p>
+      <h1>Wat staat er <em>vandaag</em> op het menu?</h1>
+      <p>Bouw je bord en laat Gemini vertellen hoe gezond, seizoensgebonden en klimaatvriendelijk het is — of blader door recepten en laat er zelf een verzinnen.</p>
+    </div>
+    <div class="nav-cards">
+      <div class="nav-card bord" data-view="plate" role="button" tabindex="0">
+        <span class="emo">🍽️</span>
+        <h3>Mijn bord</h3>
+        <p>Tik of sleep eten op je bord en krijg een AI-analyse van gezondheid, seizoen en CO₂.</p>
+        <span class="cta">Open je bord
+          <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </div>
+      <div class="nav-card recepten" data-view="recipes" role="button" tabindex="0">
+        <span class="emo">📖</span>
+        <h3>Recepten</h3>
+        <p>Kies uit 6 basisrecepten of laat Gemini iets verzinnen — ook met wat je toevallig in huis hebt.</p>
+        <span class="cta">Bekijk recepten
+          <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </div>
+    </div>
+    <p class="home-note">Analyses en recepten zijn AI-schattingen ter indicatie, geen gecertificeerde voedings- of CO₂-data.</p>
+  </section>
+
+  <!-- ================= PLATE ================= -->
+  <section class="view" id="view-plate">
+    <div class="section-intro">
+      <p class="eyebrow">voedselscanner</p>
+      <h2>Mijn <em>bord</em></h2>
+      <p>Tik op een ingrediënt om het op je bord te leggen, sleep het voor een preciezere plek, en tik op een stukje eten om het weer weg te halen.</p>
+    </div>
+
+    <main class="layout">
+      <aside class="dock" aria-label="Ingrediënten">
+        <h2>Ingrediënten</h2>
+        <p class="dock-hint">Tik om toe te voegen, of sleep naar een plek op het bord.</p>
+        <div id="dockCats"></div>
+        <div class="add-chip-block">
+          <button class="chip add-chip" id="addIngredientBtn" type="button">✨ Nieuw ingrediënt met Gemini</button>
+        </div>
+      </aside>
+
+      <section class="plate-section">
+        <div class="plate-wrap" id="plateWrap">
+          <div class="plate" id="plate">
+            <div class="plate-placeholder" id="platePlaceholder">
+              <span class="icon">🍽️</span>
+              Tik of sleep hier je eten naartoe
+            </div>
+          </div>
+          <svg class="rim" viewBox="0 0 200 200">
+            <circle class="track" cx="100" cy="100" r="92"></circle>
+            <circle class="gauge" id="rimGauge" cx="100" cy="100" r="92"></circle>
+          </svg>
+        </div>
+
+        <div class="controls">
+          <button class="btn-primary" id="analyzeBtn" type="button" disabled>
+            <span class="spinner"></span>
+            <span class="txt-idle">Analyseer mijn bord</span>
+            <span class="txt-loading" style="display:none">Bord wordt geanalyseerd…</span>
+          </button>
+          <button class="btn-ghost" id="clearBtn" type="button">Bord leegmaken</button>
+        </div>
+
+        <div class="results" id="results">
+          <div class="result-grid">
+            <div class="card health">
+              <h3>
+                <svg class="mini-gauge" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="3"></circle><circle id="miniGaugeHealth" cx="18" cy="18" r="15" fill="none" stroke="#8a9a63" stroke-width="3" stroke-linecap="round" transform="rotate(-90 18 18)"></circle></svg>
+                Gezondheid
+              </h3>
+              <div class="big-stat"><span id="healthScore">–</span><span class="unit">/ 100</span></div>
+              <p id="healthSummary">—</p>
+            </div>
+            <div class="card season">
+              <h3>🌱 Seizoen</h3>
+              <div class="big-stat"><span id="seasonScore">–</span><span class="unit">%</span></div>
+              <div class="season-bar"><div id="seasonBar"></div></div>
+              <p id="seasonSummary">—</p>
+            </div>
+            <div class="card co2">
+              <h3>💨 CO₂-impact</h3>
+              <div class="big-stat"><span id="co2Total">–</span><span class="unit">kg CO₂e</span></div>
+              <p id="co2Summary">—</p>
+            </div>
+          </div>
+
+          <div class="tip-note" id="tipNote" style="display:none;">
+            <span class="em">👩‍🍳</span>
+            <span id="tipText">—</span>
+          </div>
+
+          <div class="breakdown">
+            <h4>Per ingrediënt</h4>
+            <div id="itemList"></div>
+          </div>
+
+          <div id="errorBox" style="display:none;"></div>
+        </div>
+      </section>
+
+      <aside class="side-widgets" id="sideWidgets" aria-label="Bordstatistieken">
+        <div class="widget-card">
+          <h3>Verdeling</h3>
+          <div class="pie-wrap" id="pieWrap">
+            <div class="pie-chart" id="pieChart"></div>
+            <div class="pie-legend" id="pieLegend"><p class="pie-empty">Leg eten op je bord om de verdeling te zien.</p></div>
+          </div>
+        </div>
+        <div class="widget-card">
+          <h3>Bord-status</h3>
+          <ul class="stat-list" id="statList">
+            <li><span>Stuks op bord</span><span id="statCount">0</span></li>
+            <li><span>Categorieën</span><span id="statCats">0 / 4</span></li>
+            <li><span>Meest gebruikt</span><span id="statTop">—</span></li>
+          </ul>
+        </div>
+        <div class="widget-card premium-teaser">
+          <h3>✨ Aan Tafel Premium</h3>
+          <p>Wekelijkse boodschappenlijst, dagelijkse voedingswaarden en onbeperkt Gemini-aanvragen.</p>
+          <button class="btn-ghost" id="premiumSideBtn" type="button">Meer info</button>
+        </div>
+      </aside>
+    </main>
+  </section>
+
+  <!-- ================= RECIPES ================= -->
+  <section class="view" id="view-recipes">
+    <div class="section-intro">
+      <p class="eyebrow">receptenkast</p>
+      <h2>Wat gaan we <em>koken</em>?</h2>
+      <p>Zes basisrecepten om altijd op terug te vallen, of laat Gemini iets nieuws verzinnen — ook met precies wat je toevallig in huis hebt.</p>
+    </div>
+
+    <div class="recipe-grid" id="recipeGrid"></div>
+
+    <div class="section-intro">
+      <p class="eyebrow">gemini kookt mee</p>
+      <h2>Laat er een <em>verzinnen</em></h2>
+    </div>
+    <div class="gen-section">
+      <div class="gen-tabs">
+        <button class="gen-tab active" data-genmode="vrij" type="button">Vrij recept</button>
+        <button class="gen-tab" data-genmode="inhuis" type="button">Met wat ik in huis heb</button>
+      </div>
+
+      <div class="gen-panel active" id="genPanelVrij">
+        <label for="genWishInput">Waar heb je zin in?</label>
+        <input type="text" id="genWishInput" placeholder="bijv. iets pittigs met kip, of een snelle vega lunch">
+        <div class="filter-chips" id="filterChips">
+          <button class="filter-chip" data-filter="Vegetarisch" type="button">🌿 Vegetarisch</button>
+          <button class="filter-chip" data-filter="Snel, onder de 20 minuten" type="button">⏱ Snel (&lt;20 min)</button>
+          <button class="filter-chip" data-filter="Lage CO₂-impact" type="button">💨 Weinig CO₂</button>
+        </div>
+      </div>
+
+      <div class="gen-panel" id="genPanelInhuis">
+        <label for="genPantryInput">Wat heb je in huis?</label>
+        <textarea id="genPantryInput" placeholder="bijv. kip, broccoli, rijst, een ui"></textarea>
+        <div class="pantry-actions">
+          <button class="link-btn" id="usePlateBtn" type="button">Gebruik ingrediënten van mijn bord</button>
+        </div>
+      </div>
+
+      <div class="controls" style="justify-content:flex-start;">
+        <button class="btn-primary" id="generateRecipeBtn" type="button" style="background:linear-gradient(180deg,var(--wheat),var(--wheat-deep)); box-shadow:0 10px 22px -8px rgba(199,154,62,.5); color:#2b2117;">
+          <span class="spinner" style="border-color:rgba(43,33,23,.35); border-top-color:#2b2117;"></span>
+          <span class="txt-idle">Genereer recept</span>
+          <span class="txt-loading" style="display:none">Gemini kookt iets op…</span>
+        </button>
+      </div>
+
+      <div class="gen-result" id="genResult"></div>
+      <div class="gen-error" id="genError" style="display:none;"></div>
+    </div>
+  </section>
+
+  <footer class="foot">Analyses en recepten zijn AI-schattingen ter indicatie, geen gecertificeerde voedings- of CO₂-data.</footer>
+</div>
+
+<!-- Settings modal -->
+<div class="overlay" id="overlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button class="close-x" id="closeModal" aria-label="Sluiten">✕</button>
+    <h2 id="modalTitle">Gemini API-sleutel</h2>
+    <p class="desc">Nodig om je bord te analyseren, ingrediënten toe te voegen en recepten te genereren. Haal gratis een sleutel op bij <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a>. Je sleutel wordt alleen in deze sessie onthouden — na herladen moet je hem opnieuw invullen.</p>
+    <label for="apiKeyInput">API-sleutel</label>
+    <input type="password" id="apiKeyInput" placeholder="AIza…" autocomplete="off" spellcheck="false">
+    <label for="modelSelect">Model</label>
+    <select id="modelSelect"><option value="">— eerst sleutel opslaan —</option></select>
+    <div class="modal-status" id="modalStatus"></div>
+    <div class="modal-actions">
+      <button class="btn-primary" id="saveKeyBtn" type="button" style="background:linear-gradient(180deg,var(--sky),var(--sky-deep)); box-shadow:0 10px 22px -8px rgba(92,138,156,.5);">
+        <span class="txt-idle">Opslaan &amp; modellen laden</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Ingredient add modal -->
+<div class="overlay" id="overlayIngredient">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="ingModalTitle">
+    <button class="close-x" id="closeIngModal" aria-label="Sluiten">✕</button>
+    <h2 id="ingModalTitle">Nieuw ingrediënt</h2>
+
+    <div id="ingStep1">
+      <p class="desc">Staat een ingrediënt er niet bij? Typ de naam en Gemini bedenkt de juiste categorie en een paar passende emoji's.</p>
+      <label for="newFoodNameInput">Ingrediënt</label>
+      <input type="text" id="newFoodNameInput" placeholder="bijv. linzen, avocado, tofu" autocomplete="off">
+      <div class="modal-status" id="ingModalStatus"></div>
+      <div class="modal-actions">
+        <button class="btn-primary" id="askGeminiBtn" type="button">
+          <span class="spinner"></span>
+          <span class="txt-idle">Vraag Gemini om hulp</span>
+          <span class="txt-loading" style="display:none">Gemini denkt na…</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="ingStep2" style="display:none;">
+      <p class="desc">Kies een emoji voor <strong id="ingConfirmName">dit ingrediënt</strong>.</p>
+      <div class="new-food-preview">
+        <span class="pv-emo" id="pvEmo">🍽️</span>
+        <div>
+          <div class="pv-name" id="pvName">—</div>
+          <div class="pv-cat" id="pvCat">—</div>
+        </div>
+      </div>
+      <label>Categorie</label>
+      <select id="newFoodCat">
+        <option value="groenten">Groenten</option>
+        <option value="fruit">Fruit</option>
+        <option value="granen">Granen</option>
+        <option value="eiwit">Eiwit &amp; zuivel</option>
+      </select>
+      <label>Kies een emoji</label>
+      <div class="emoji-grid" id="emojiGrid"></div>
+      <div class="emoji-custom-row">
+        <input type="text" id="customEmojiInput" maxlength="4" placeholder="🥑">
+        <span>of typ je eigen emoji</span>
+      </div>
+      <div class="modal-status" id="ingModalStatus2"></div>
+      <div class="modal-actions">
+        <button class="btn-ghost" id="ingBackBtn" type="button">Terug</button>
+        <button class="btn-primary" id="confirmAddFoodBtn" type="button" disabled>Toevoegen aan bord</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Premium modal -->
+<div class="overlay" id="overlayPremium">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="premiumModalTitle" style="max-width:500px;">
+    <button class="close-x" id="closePremiumModal" aria-label="Sluiten">✕</button>
+    <h2 id="premiumModalTitle">Ga Premium ✨</h2>
+    <p class="desc">Haal meer uit Aan Tafel met slimmere boodschappenlijstjes en onbeperkte AI-hulp.</p>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="tier-name">Gratis</div>
+        <div class="tier-price">€0 <span>/ maand</span></div>
+        <ul>
+          <li><span class="ck">✓</span> Bord bouwen &amp; analyseren</li>
+          <li><span class="ck">✓</span> 6 basisrecepten</li>
+          <li><span class="ck">✓</span> Eigen Gemini API-sleutel nodig</li>
+        </ul>
+      </div>
+      <div class="price-card highlight">
+        <span class="badge-pro">Populair</span>
+        <div class="tier-name">Premium</div>
+        <div class="tier-price">€4,99 <span>/ maand</span></div>
+        <ul>
+          <li><span class="ck">✓</span> Alles uit Gratis</li>
+          <li><span class="ck">✓</span> Wekelijkse boodschappenlijst</li>
+          <li><span class="ck">✓</span> Dagelijkse voedingswaarden</li>
+          <li><span class="ck">✓</span> Onbeperkt Gemini-aanvragen, geen eigen sleutel nodig</li>
+          <li><span class="ck">✓</span> Bewaar bordjes &amp; recepten</li>
+        </ul>
+      </div>
+    </div>
+    <div class="modal-status" id="premiumModalStatus"></div>
+    <div class="modal-actions">
+      <button class="btn-primary" id="upgradePremiumBtn" type="button" style="background:linear-gradient(180deg,var(--wheat),var(--wheat-deep)); box-shadow:0 10px 22px -8px rgba(199,154,62,.5); color:#2b2117;">
+        Upgrade naar Premium
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Account / sign-up modal -->
+<div class="overlay" id="overlayAccount">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="accountModalTitle">
+    <button class="close-x" id="closeAccountModal" aria-label="Sluiten">✕</button>
+    <h2 id="accountModalTitle">Welkom terug</h2>
+    <div class="auth-tabs" id="authTabs">
+      <button class="auth-tab active" data-auth="login" type="button">Inloggen</button>
+      <button class="auth-tab" data-auth="signup" type="button">Registreren</button>
+    </div>
+
+    <div class="auth-panel active" id="authPanelLogin">
+      <p class="desc">Log in om je bordjes en voorkeuren te bewaren.</p>
+      <label for="loginEmail">E-mailadres</label>
+      <input type="text" id="loginEmail" placeholder="jij@voorbeeld.nl" autocomplete="off">
+      <label for="loginPassword">Wachtwoord</label>
+      <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="off">
+    </div>
+
+    <div class="auth-panel" id="authPanelSignup">
+      <p class="desc">Maak een gratis account aan — upgraden naar Premium kan later altijd.</p>
+      <label for="signupName">Naam</label>
+      <input type="text" id="signupName" placeholder="Je naam" autocomplete="off">
+      <label for="signupEmail">E-mailadres</label>
+      <input type="text" id="signupEmail" placeholder="jij@voorbeeld.nl" autocomplete="off">
+      <label for="signupPassword">Wachtwoord</label>
+      <input type="password" id="signupPassword" placeholder="••••••••" autocomplete="off">
+    </div>
+
+    <div class="modal-status" id="accountModalStatus"></div>
+    <div class="modal-actions">
+      <button class="btn-primary" id="authSubmitBtn" type="button" style="background:linear-gradient(180deg,var(--sky),var(--sky-deep)); box-shadow:0 10px 22px -8px rgba(92,138,156,.5);">
+        Inloggen
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+  var firebaseConfig = {
+    apiKey: "AIzaSyDBUCyniug18ynwrnvG6Dv-9-wRSIarsXQ",
+    authDomain: "aantafel-e7e30.firebaseapp.com",
+    projectId: "aantafel-e7e30",
+    storageBucket: "aantafel-e7e30.firebasestorage.app",
+    messagingSenderId: "552886266652",
+    appId: "1:552886266652:web:4bdf1eb408b51ddd7d68d9"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  var __auth = firebase.auth();
+  var __db = firebase.firestore();
+
+  // Same shape/API as before, so the rest of the script below doesn't change.
+  window.__firebaseAuth = {
+    auth: __auth,
+    createUserWithEmailAndPassword: function(auth, email, pass){ return auth.createUserWithEmailAndPassword(email, pass); },
+    signInWithEmailAndPassword: function(auth, email, pass){ return auth.signInWithEmailAndPassword(email, pass); },
+    signOut: function(auth){ return auth.signOut(); },
+    onAuthStateChanged: function(auth, cb){ return auth.onAuthStateChanged(cb); },
+    updateProfile: function(user, data){ return user.updateProfile(data); }
+  };
+
+  window.__firestore = {
+    db: __db,
+    savePlate: function(uid, plateItems, uidCounter){
+      return __db.collection('users').doc(uid).set({
+        plateItems: plateItems,
+        uidCounter: uidCounter,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+    },
+    loadPlate: function(uid){
+      return __db.collection('users').doc(uid).get().then(function(doc){
+        return doc.exists ? doc.data() : null;
+      });
+    }
+  };
+</script>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ================= DATA ================= */
+  const FOODS = [
+    {id:'broccoli', name:'Broccoli', emo:'🥦', cat:'groenten'},
+    {id:'wortel', name:'Wortel', emo:'🥕', cat:'groenten'},
+    {id:'spinazie', name:'Spinazie', emo:'🥬', cat:'groenten'},
+    {id:'tomaat', name:'Tomaat', emo:'🍅', cat:'groenten'},
+    {id:'paprika', name:'Paprika', emo:'🫑', cat:'groenten'},
+    {id:'ui', name:'Ui', emo:'🧅', cat:'groenten'},
+    {id:'aardappel', name:'Aardappel', emo:'🥔', cat:'groenten'},
+    {id:'komkommer', name:'Komkommer', emo:'🥒', cat:'groenten'},
+    {id:'mais', name:'Mais', emo:'🌽', cat:'groenten'},
+    {id:'champignon', name:'Champignon', emo:'🍄', cat:'groenten'},
+    {id:'aubergine', name:'Aubergine', emo:'🍆', cat:'groenten'},
+    {id:'avocado', name:'Avocado', emo:'🥑', cat:'groenten'},
+    {id:'knoflook', name:'Knoflook', emo:'🧄', cat:'groenten'},
+    {id:'courgette', name:'Courgette', emo:'🥒', cat:'groenten'},
+    {id:'zoete-aardappel', name:'Zoete aardappel', emo:'🍠', cat:'groenten'},
+    {id:'erwten', name:'Erwten', emo:'🫛', cat:'groenten'},
+    {id:'sla', name:'Sla', emo:'🥗', cat:'groenten'},
+
+    {id:'appel', name:'Appel', emo:'🍎', cat:'fruit'},
+    {id:'banaan', name:'Banaan', emo:'🍌', cat:'fruit'},
+    {id:'aardbei', name:'Aardbei', emo:'🍓', cat:'fruit'},
+    {id:'sinaasappel', name:'Sinaasappel', emo:'🍊', cat:'fruit'},
+    {id:'druiven', name:'Druiven', emo:'🍇', cat:'fruit'},
+    {id:'peer', name:'Peer', emo:'🍐', cat:'fruit'},
+    {id:'kiwi', name:'Kiwi', emo:'🥝', cat:'fruit'},
+    {id:'watermeloen', name:'Watermeloen', emo:'🍉', cat:'fruit'},
+    {id:'mango', name:'Mango', emo:'🥭', cat:'fruit'},
+    {id:'ananas', name:'Ananas', emo:'🍍', cat:'fruit'},
+    {id:'perzik', name:'Perzik', emo:'🍑', cat:'fruit'},
+    {id:'bosbessen', name:'Bosbessen', emo:'🫐', cat:'fruit'},
+    {id:'kokosnoot', name:'Kokosnoot', emo:'🥥', cat:'fruit'},
+    {id:'citroen', name:'Citroen', emo:'🍋', cat:'fruit'},
+
+    {id:'brood', name:'Brood', emo:'🍞', cat:'granen'},
+    {id:'rijst', name:'Rijst', emo:'🍚', cat:'granen'},
+    {id:'pasta', name:'Pasta', emo:'🍝', cat:'granen'},
+    {id:'havermout', name:'Havermout', emo:'🥣', cat:'granen'},
+    {id:'quinoa', name:'Quinoa', emo:'🌾', cat:'granen'},
+    {id:'couscous', name:'Couscous', emo:'🌾', cat:'granen'},
+    {id:'noedels', name:'Noedels', emo:'🍜', cat:'granen'},
+    {id:'tortilla', name:'Tortilla', emo:'🫓', cat:'granen'},
+
+    {id:'kip', name:'Kip', emo:'🍗', cat:'eiwit'},
+    {id:'rundvlees', name:'Rundvlees', emo:'🥩', cat:'eiwit'},
+    {id:'zalm', name:'Zalm', emo:'🐟', cat:'eiwit'},
+    {id:'ei', name:'Ei', emo:'🥚', cat:'eiwit'},
+    {id:'kaas', name:'Kaas', emo:'🧀', cat:'eiwit'},
+    {id:'bonen', name:'Bonen', emo:'🫘', cat:'eiwit'},
+    {id:'melk', name:'Melk', emo:'🥛', cat:'eiwit'},
+    {id:'chocolade', name:'Chocolade', emo:'🍫', cat:'eiwit'},
+    {id:'friet', name:'Friet', emo:'🍟', cat:'eiwit'},
+    {id:'tofu', name:'Tofu', emo:'⬜', cat:'eiwit'},
+    {id:'garnalen', name:'Garnalen', emo:'🦐', cat:'eiwit'},
+    {id:'kalkoen', name:'Kalkoen', emo:'🦃', cat:'eiwit'},
+    {id:'spek', name:'Spek', emo:'🥓', cat:'eiwit'},
+    {id:'linzen', name:'Linzen', emo:'🟤', cat:'eiwit'},
+    {id:'kikkererwten', name:'Kikkererwten', emo:'🧆', cat:'eiwit'},
+    {id:'yoghurt', name:'Yoghurt', emo:'🍦', cat:'eiwit'},
+    {id:'tempeh', name:'Tempeh', emo:'🟫', cat:'eiwit'},
+  ];
+  const CATS = [
+    {key:'groenten', label:'Groenten'},
+    {key:'fruit', label:'Fruit'},
+    {key:'granen', label:'Granen'},
+    {key:'eiwit', label:'Eiwit & zuivel'},
+  ];
+
+  const BASE_RECIPES = [
+    {
+      emoji:'🥦', title:'Kip-broccoli roerbak met rijst', time:25, servings:2,
+      teaser:'Snelle, gezonde wokschotel met veel groente en een romige sojasaus.',
+      ingredients:['300 g kipfilet, in blokjes','1 broccoli, in roosjes','1 rode paprika, in reepjes','2 tenen knoflook, fijngehakt','2 el sojasaus','1 el sesamolie','150 g rijst','sesamzaad naar smaak'],
+      steps:['Kook de rijst volgens de verpakking gaar.','Verhit de sesamolie in een wok en bak de kip goudbruin.','Voeg knoflook, broccoli en paprika toe en roerbak 5–6 minuten.','Blus af met sojasaus en laat kort inkoken.','Serveer op de rijst met sesamzaad.']
+    },
+    {
+      emoji:'🥣', title:'Overnight oats met aardbei en banaan', time:5, servings:1,
+      teaser:'Ontbijt dat je de avond ervoor klaarzet — koud, romig en fris.',
+      ingredients:['50 g havermout','150 ml melk (of plantaardig)','1 banaan, in plakjes','6 aardbeien, in stukjes','1 el honing','snufje kaneel'],
+      steps:['Meng havermout, melk, honing en kaneel in een pot.','Voeg de helft van het fruit toe en roer door.','Zet minimaal 4 uur, of een hele nacht, in de koelkast.','Garneer voor het serveren met de rest van het fruit.']
+    },
+    {
+      emoji:'🫑', title:"Gevulde paprika met bonen en kaas", time:40, servings:2,
+      teaser:'Ovenschotel vol eiwitten uit bonen en kaas, mild op smaak.',
+      ingredients:["2 grote paprika's",'1 blik witte bonen, uitgelekt','1 ui, gesnipperd','1 teen knoflook, fijngehakt','100 g geraspte kaas','1 tl paprikapoeder','olijfolie, zout & peper'],
+      steps:['Verwarm de oven voor op 200°C.',"Halveer de paprika's en verwijder de zaadlijsten.",'Fruit ui en knoflook glazig in olijfolie, voeg bonen en paprikapoeder toe en breng op smaak.','Vul de paprikahelften met het mengsel en bestrooi met kaas.','Bak 20–25 minuten in de oven tot de kaas goudbruin is.']
+    },
+    {
+      emoji:'🐟', title:'Zalm met aardappelpuree en spinazie', time:30, servings:2,
+      teaser:'Klassieke combinatie: romige puree, gestoofde spinazie en botergare zalm.',
+      ingredients:['2 zalmfilets','500 g aardappelen','150 g spinazie','30 g boter','scheutje melk','citroensap, zout & peper'],
+      steps:['Kook de aardappelen gaar en stamp ze met boter en melk tot een romige puree.','Bak de zalm 3–4 minuten per kant in een hete pan en besprenkel met citroensap.','Stoof de spinazie kort met een snufje zout tot hij slinkt.','Serveer de zalm op de puree met de spinazie ernaast.']
+    },
+    {
+      emoji:'🍝', title:'Pasta met tomaat, champignon en ui', time:20, servings:2,
+      teaser:'Vegetarische weekdagpasta, klaar in twintig minuten.',
+      ingredients:['200 g pasta','4 tomaten, in blokjes','150 g champignons, in plakjes','1 ui, gesnipperd','2 tenen knoflook, fijngehakt','olijfolie, verse basilicum, parmezaan'],
+      steps:['Kook de pasta beetgaar volgens de verpakking.','Fruit ui en knoflook in olijfolie, voeg de champignons toe en bak goudbruin.','Voeg de tomaten toe en laat 8 minuten zachtjes sudderen tot een saus.','Meng de pasta erdoor en serveer met basilicum en parmezaan.']
+    },
+    {
+      emoji:'🫘', title:'Mexicaanse bonenbowl met mais en paprika', time:20, servings:2,
+      teaser:'Vullende, plantaardige bowl met frisse limoen en koriander.',
+      ingredients:['1 blik zwarte bonen, uitgelekt','150 g mais','1 paprika, in blokjes','150 g rijst','1 limoen','verse koriander','1 tl komijnpoeder, olijfolie'],
+      steps:['Kook de rijst gaar.','Verhit olijfolie en bak de paprika 4 minuten, voeg bonen, mais en komijn toe en verwarm door.','Verdeel de rijst over kommen en schep het bonenmengsel erop.','Werk af met limoensap en verse koriander.']
+    }
+  ];
+
+  const EMOJI_FALLBACKS = ['🥗','🍽️','🌱','🍲','🧺','🥘','🍜','🫙'];
+
+  /* ================= STATE ================= */
+  let apiKey = "";
+  let model = "";
+  let plateItems = []; // {uid, foodId, xPct, yPct, rot}
+  let uidCounter = 1;
+
+  /* ================= FIRESTORE: BORD OPSLAAN/LADEN ================= */
+  const fs = window.__firestore;
+  let plateSaveTimer = null;
+  let loadedPlateForUid = null; // voorkomt dat we net-geladen data meteen weer wegschrijven
+
+  function schedulePlateSave(){
+    if(!currentUser) return; // niet ingelogd → niets bewaren
+    clearTimeout(plateSaveTimer);
+    plateSaveTimer = setTimeout(function(){
+      fs.savePlate(currentUser.uid, plateItems, uidCounter).catch(function(err){
+        console.error('Opslaan van bord mislukt:', err);
+      });
+    }, 700);
+  }
+
+  function clearPlateFromScreen(){
+    plateItems.slice().forEach(function(i){
+      const el = plate.querySelector('.token[data-uid="'+i.uid+'"]');
+      if(el) el.remove();
+    });
+    plateItems = [];
+  }
+
+  function loadPlateForUser(uid){
+    fs.loadPlate(uid).then(function(data){
+      clearPlateFromScreen();
+      if(data && Array.isArray(data.plateItems)){
+        data.plateItems.forEach(function(item){
+          plateItems.push(item);
+          renderToken(item);
+        });
+        uidCounter = data.uidCounter || (plateItems.length + 1);
+      } else {
+        uidCounter = 1;
+      }
+      updateUIState();
+      loadedPlateForUid = uid;
+    }).catch(function(err){
+      console.error('Laden van bord mislukt:', err);
+    });
+  }
+  let genMode = 'vrij';
+  let activeFilters = new Set();
+  let pendingNewFood = null; // {id,name,cat,emo}
+
+  /* ================= DOM refs ================= */
+  const dockCats = document.getElementById('dockCats');
+  const plate = document.getElementById('plate');
+  const plateWrap = document.getElementById('plateWrap');
+  const platePlaceholder = document.getElementById('platePlaceholder');
+  const analyzeBtn = document.getElementById('analyzeBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const results = document.getElementById('results');
+  const rimGauge = document.getElementById('rimGauge');
+  const settingsBtn = document.getElementById('settingsBtn');
+  const keyDot = document.getElementById('keyDot');
+  const settingsLabel = document.getElementById('settingsLabel');
+  const overlay = document.getElementById('overlay');
+  const closeModal = document.getElementById('closeModal');
+  const apiKeyInput = document.getElementById('apiKeyInput');
+  const modelSelect = document.getElementById('modelSelect');
+  const saveKeyBtn = document.getElementById('saveKeyBtn');
+  const modalStatus = document.getElementById('modalStatus');
+  const errorBox = document.getElementById('errorBox');
+  const modeSwitch = document.getElementById('modeSwitch');
+  const pieChart = document.getElementById('pieChart');
+  const pieLegend = document.getElementById('pieLegend');
+  const statCount = document.getElementById('statCount');
+  const statCats = document.getElementById('statCats');
+  const statTop = document.getElementById('statTop');
+  const premiumBtn = document.getElementById('premiumBtn');
+  const accountBtn = document.getElementById('accountBtn');
+  const premiumSideBtn = document.getElementById('premiumSideBtn');
+
+  /* ================= VIEW ROUTING ================= */
+  const VIEW_NAMES = ['home','plate','recipes'];
+  function setView(name){
+    if(VIEW_NAMES.indexOf(name)===-1) return;
+    VIEW_NAMES.forEach(v=>{
+      document.getElementById('view-'+v).classList.toggle('active', v===name);
+    });
+    document.querySelectorAll('.nav-tab').forEach(t=>t.classList.toggle('active', t.dataset.view===name));
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  document.querySelectorAll('[data-view]').forEach(el=>{
+    el.addEventListener('click', ()=> setView(el.dataset.view));
+    if(el.classList.contains('nav-card')){
+      el.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); setView(el.dataset.view); } });
+    }
+  });
+  setView('home');
+
+  /* ================= MODE SWITCH (mobiel / desktop) ================= */
+  function setForcedMode(mode){
+    document.documentElement.setAttribute('data-forcemode', mode);
+    modeSwitch.querySelectorAll('.mode-btn').forEach(b=> b.classList.toggle('active', b.dataset.mode===mode));
+  }
+  modeSwitch.querySelectorAll('.mode-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=> setForcedMode(btn.dataset.mode));
+  });
+  // startwaarde: volg de echte schermbreedte, daarna is het aan de gebruiker
+  setForcedMode(window.matchMedia('(max-width: 860px)').matches ? 'mobile' : 'desktop');
+
+  /* ================= BUILD DOCK ================= */
+  const categoryChipsEls = {};
+
+  function makeChip(food){
+    const chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.dataset.foodId = food.id;
+    chip.innerHTML = '<span class="emo">'+food.emo+'</span><span>'+escapeHtml(food.name)+'</span>';
+    chip.addEventListener('pointerdown', onChipPointerDown);
+    return chip;
+  }
+
+  CATS.forEach(cat=>{
+    const block = document.createElement('div');
+    block.className = 'cat-block';
+    const label = document.createElement('p');
+    label.className = 'cat-label cat-'+cat.key;
+    label.innerHTML = '<span class="cat-swatch"></span>'+cat.label;
+    const chips = document.createElement('div');
+    chips.className = 'chips';
+    FOODS.filter(f=>f.cat===cat.key).forEach(f=> chips.appendChild(makeChip(f)));
+    block.appendChild(label);
+    block.appendChild(chips);
+    dockCats.appendChild(block);
+    categoryChipsEls[cat.key] = chips;
+  });
+
+  function addFoodToDock(food){
+    const chip = makeChip(food);
+    chip.classList.add('new-chip');
+    categoryChipsEls[food.cat].appendChild(chip);
+    chip.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+
+  /* ================= DRAG / TAP FROM DOCK ================= */
+  let ghostEl = null;
+  let draggingFoodId = null;
+  let draggingChip = null;
+
+  function onChipPointerDown(e){
+    e.preventDefault();
+    draggingChip = e.currentTarget;
+    draggingFoodId = draggingChip.dataset.foodId;
+    draggingChip.classList.add('dragging');
+    const food = FOODS.find(f=>f.id===draggingFoodId);
+    const startX = e.clientX, startY = e.clientY, startT = Date.now();
+    let moved = false;
+
+    ghostEl = document.createElement('div');
+    ghostEl.className = 'ghost';
+    ghostEl.textContent = food.emo;
+    document.body.appendChild(ghostEl);
+    moveGhost(e.clientX, e.clientY);
+
+    function onMove(ev){
+      if(Math.hypot(ev.clientX-startX, ev.clientY-startY) > 6) moved = true;
+      moveGhost(ev.clientX, ev.clientY);
+      plateWrap.classList.toggle('drag-over', isOverPlate(ev.clientX, ev.clientY));
+    }
+    function onUp(ev){
+      window.removeEventListener('pointermove', onMove);
+      plateWrap.classList.remove('drag-over');
+      draggingChip.classList.remove('dragging');
+
+      const dt = Date.now() - startT;
+      const isTap = !moved && dt < 500;
+      if(isTap){
+        addFoodToPlateRandom(draggingFoodId);
+      } else if(isOverPlate(ev.clientX, ev.clientY)){
+        addFoodToPlate(draggingFoodId, ev.clientX, ev.clientY);
+      }
+      if(ghostEl){ ghostEl.remove(); ghostEl = null; }
+      draggingFoodId = null; draggingChip = null;
+    }
+
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp, {once:true});
+  }
+
+  function moveGhost(x,y){
+    if(ghostEl){ ghostEl.style.left = x+'px'; ghostEl.style.top = y+'px'; }
+  }
+
+  function isOverPlate(x,y){
+    const r = plate.getBoundingClientRect();
+    const cx = r.left + r.width/2;
+    const cy = r.top + r.height/2;
+    const dx = x-cx, dy = y-cy;
+    const radius = r.width/2;
+    return Math.sqrt(dx*dx+dy*dy) < radius;
+  }
+
+  /* ================= PLATE ITEMS ================= */
+  function placeFoodAt(foodId, xPct, yPct){
+    const item = {
+      uid: uidCounter++,
+      foodId: foodId,
+      xPct: xPct,
+      yPct: yPct,
+      rot: (Math.random()*36-18).toFixed(1)
+    };
+    plateItems.push(item);
+    renderToken(item);
+    updateUIState();
+    hideResultsIfStale();
+    schedulePlateSave();
+  }
+
+  function addFoodToPlate(foodId, clientX, clientY){
+    const r = plate.getBoundingClientRect();
+    const cx = r.left + r.width/2;
+    const cy = r.top + r.height/2;
+    let dx = clientX - cx, dy = clientY - cy;
+    const maxR = r.width * 0.40;
+    const dist = Math.sqrt(dx*dx+dy*dy);
+    if(dist > maxR){ const s = maxR/dist; dx*=s; dy*=s; }
+    const xPct = 50 + (dx / r.width)*100;
+    const yPct = 50 + (dy / r.height)*100;
+    placeFoodAt(foodId, xPct, yPct);
+  }
+
+  function addFoodToPlateRandom(foodId){
+    // random point within an inner disk of the plate, avoiding dead-center overlap
+    const angle = Math.random()*Math.PI*2;
+    const radiusPct = 10 + Math.random()*26; // 10%-36% from center
+    const xPct = 50 + Math.cos(angle)*radiusPct;
+    const yPct = 50 + Math.sin(angle)*radiusPct;
+    placeFoodAt(foodId, xPct, yPct);
+  }
+
+  function renderToken(item){
+    const food = FOODS.find(f=>f.id===item.foodId);
+    const el = document.createElement('div');
+    el.className = 'token';
+    el.dataset.uid = item.uid;
+    el.style.left = item.xPct+'%';
+    el.style.top = item.yPct+'%';
+    el.style.setProperty('--rot', item.rot+'deg');
+    el.title = food.name+' — tik om te verwijderen, sleep om te verplaatsen';
+    el.innerHTML = food.emo + '<span class="remove" role="button" aria-label="Verwijder '+escapeHtml(food.name)+'">✕</span>';
+    el.querySelector('.remove').addEventListener('pointerdown', function(ev){
+      ev.stopPropagation();
+      removeItem(item.uid);
+    });
+    el.addEventListener('pointerdown', function(ev){
+      startReposition(ev, item, el);
+    });
+    plate.appendChild(el);
+  }
+
+  function startReposition(e, item, el){
+    e.preventDefault();
+    const startX = e.clientX, startY = e.clientY, startT = Date.now();
+    let moved = false;
+    el.setPointerCapture(e.pointerId);
+    el.style.animation = 'none';
+    el.style.zIndex = 5;
+    function move(ev){
+      if(Math.hypot(ev.clientX-startX, ev.clientY-startY) > 6) moved = true;
+      const r = plate.getBoundingClientRect();
+      const cx = r.left + r.width/2, cy = r.top + r.height/2;
+      let dx = ev.clientX-cx, dy = ev.clientY-cy;
+      const maxR = r.width*0.44;
+      const dist = Math.sqrt(dx*dx+dy*dy);
+      if(dist>maxR){ const s=maxR/dist; dx*=s; dy*=s; }
+      item.xPct = 50 + (dx/r.width)*100;
+      item.yPct = 50 + (dy/r.height)*100;
+      el.style.left = item.xPct+'%';
+      el.style.top = item.yPct+'%';
+    }
+    function up(ev){
+      el.style.zIndex = '';
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+      const dist = Math.hypot(ev.clientX-startX, ev.clientY-startY);
+      const dt = Date.now()-startT;
+      if(!moved && dist<6 && dt<500){
+        removeItem(item.uid);
+      } else {
+        schedulePlateSave();
+      }
+    }
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up, {once:true});
+  }
+
+  function removeItem(uid){
+    plateItems = plateItems.filter(i=>i.uid!==uid);
+    const el = plate.querySelector('.token[data-uid="'+uid+'"]');
+    if(el){
+      const rot = el.style.getPropertyValue('--rot') || '0deg';
+      el.style.transition = 'transform .25s var(--ease), opacity .25s var(--ease)';
+      el.style.transform = 'translate(-50%,-50%) rotate('+rot+') scale(0)';
+      el.style.opacity = '0';
+      setTimeout(()=>el.remove(), 240);
+    }
+    updateUIState();
+    hideResultsIfStale();
+    schedulePlateSave();
+  }
+
+  const CAT_COLORS = {groenten:'#8a9a63', fruit:'#5c8a9c', granen:'#c79a3e', eiwit:'#c1592f'};
+
+  function renderSideWidgets(){
+    if(!plateItems.length){
+      pieChart.style.background = 'conic-gradient(var(--line-strong) 0deg 360deg)';
+      pieLegend.innerHTML = '<p class="pie-empty">Leg eten op je bord om de verdeling te zien.</p>';
+      statCount.textContent = '0';
+      statCats.textContent = '0 / 4';
+      statTop.textContent = '—';
+      return;
+    }
+
+    const catCounts = {};
+    const foodCounts = {};
+    plateItems.forEach(i=>{
+      const f = FOODS.find(x=>x.id===i.foodId);
+      if(!f) return;
+      catCounts[f.cat] = (catCounts[f.cat]||0) + 1;
+      foodCounts[f.id] = (foodCounts[f.id]||0) + 1;
+    });
+
+    const total = plateItems.length;
+    let angleStart = 0;
+    const gradientParts = [];
+    const legendParts = [];
+    CATS.forEach(cat=>{
+      const count = catCounts[cat.key] || 0;
+      if(!count) return;
+      const pct = count/total*100;
+      const angleEnd = angleStart + pct/100*360;
+      const color = CAT_COLORS[cat.key];
+      gradientParts.push(color+' '+angleStart.toFixed(1)+'deg '+angleEnd.toFixed(1)+'deg');
+      legendParts.push('<div class="leg-row"><span class="leg-swatch" style="background:'+color+'"></span><span>'+cat.label+'</span><span class="leg-pct">'+Math.round(pct)+'%</span></div>');
+      angleStart = angleEnd;
+    });
+    pieChart.style.background = 'conic-gradient('+gradientParts.join(', ')+')';
+    pieLegend.innerHTML = legendParts.join('');
+
+    let topId = null, topCount = 0;
+    Object.keys(foodCounts).forEach(id=>{
+      if(foodCounts[id] > topCount){ topCount = foodCounts[id]; topId = id; }
+    });
+    const topFood = topId ? FOODS.find(f=>f.id===topId) : null;
+
+    statCount.textContent = String(total);
+    statCats.textContent = Object.keys(catCounts).length + ' / 4';
+    statTop.textContent = topFood ? (topFood.emo+' '+topFood.name) : '—';
+  }
+
+  function updateUIState(){
+    const has = plateItems.length>0;
+    platePlaceholder.style.opacity = has ? '0' : '1';
+    analyzeBtn.disabled = !has;
+    renderSideWidgets();
+  }
+
+  function hideResultsIfStale(){
+    if(results.classList.contains('show')){
+      results.classList.remove('show');
+      resetGauge();
+    }
+  }
+
+  clearBtn.addEventListener('click', function(){
+    plateItems.slice().forEach(i=>removeItem(i.uid));
+    schedulePlateSave();
+  });
+
+  /* ================= SETTINGS MODAL ================= */
+  function openModal(){
+    overlay.classList.add('show');
+    apiKeyInput.value = apiKey;
+    apiKeyInput.focus();
+  }
+  function closeModalFn(){ overlay.classList.remove('show'); }
+  settingsBtn.addEventListener('click', openModal);
+  closeModal.addEventListener('click', closeModalFn);
+  overlay.addEventListener('click', function(e){ if(e.target===overlay) closeModalFn(); });
+
+  saveKeyBtn.addEventListener('click', async function(){
+    const val = apiKeyInput.value.trim();
+    if(!val){ setModalStatus('Vul een geldige sleutel in.', 'err'); return; }
+    apiKey = val;
+    setModalStatus('Modellen laden…', '');
+    modelSelect.innerHTML = '<option value="">Laden…</option>';
+    try{
+      const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models?key='+encodeURIComponent(apiKey));
+      if(!res.ok) throw new Error('status '+res.status);
+      const data = await res.json();
+      const list = (data.models||[])
+        .filter(m => (m.supportedGenerationMethods||[]).includes('generateContent'))
+        .filter(m => /gemini/i.test(m.name) && !/embedding|aqa|imagen|veo|tts|vision-|learnlm/i.test(m.name));
+      if(!list.length) throw new Error('geen modellen gevonden');
+      modelSelect.innerHTML = '';
+      list.forEach(m=>{
+        const name = m.name.replace('models/','');
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = m.displayName || name;
+        modelSelect.appendChild(opt);
+      });
+
+      const stillValid = model && list.some(m => m.name.replace('models/','') === model);
+      if(!stillValid){
+        function versionOf(name){
+          const m = name.match(/(\d+(?:\.\d+)?)/);
+          return m ? parseFloat(m[1]) : 0;
+        }
+        const flashModels = list.filter(m=>/flash/i.test(m.name));
+        const pool = flashModels.length ? flashModels : list;
+        pool.sort((a,b)=> versionOf(b.name) - versionOf(a.name));
+        model = pool[0].name.replace('models/','');
+      }
+      modelSelect.value = model;
+      setModalStatus('Sleutel werkt — '+list.length+' model(len) gevonden.', 'ok');
+      updateKeyDot();
+    }catch(err){
+      setModalStatus('Kon geen verbinding maken. Controleer je sleutel. ('+err.message+')', 'err');
+      modelSelect.innerHTML = '<option value="">— opnieuw proberen —</option>';
+      updateKeyDot();
+    }
+  });
+
+  modelSelect.addEventListener('change', function(){ model = modelSelect.value; });
+
+  function setModalStatus(msg, kind){
+    modalStatus.textContent = msg;
+    modalStatus.className = 'modal-status'+(kind?(' '+kind):'');
+  }
+
+  function updateKeyDot(){
+    const ready = !!(apiKey && model);
+    keyDot.classList.toggle('ok', ready);
+    settingsLabel.textContent = ready ? 'API-sleutel actief' : 'API-sleutel instellen';
+  }
+
+  /* ================= GEMINI HELPER ================= */
+  async function geminiJSON(prompt, temperature){
+    if(temperature===undefined) temperature = 0.4;
+    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent?key='+encodeURIComponent(apiKey), {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        contents:[{ parts:[{ text: prompt }] }],
+        generationConfig:{ temperature:temperature, responseMimeType:'application/json' }
+      })
+    });
+    if(!res.ok){
+      const t = await res.text().catch(()=>'');
+      if(res.status===404){
+        throw new Error('Model "'+model+'" is niet (meer) beschikbaar. Open de instellingen en kies een ander model uit de lijst.');
+      }
+      throw new Error('API-fout ('+res.status+'). '+t.slice(0,180));
+    }
+    const data = await res.json();
+    const text = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text;
+    if(!text) throw new Error('Geen antwoord ontvangen van het model.');
+    const clean = text.replace(/```json|```/g,'').trim();
+    return JSON.parse(clean);
+  }
+
+  /* ================= ANALYZE PLATE ================= */
+  analyzeBtn.addEventListener('click', async function(){
+    if(!plateItems.length) return;
+    if(!apiKey || !model){ openModal(); setModalStatus('Stel eerst je API-sleutel in.', 'err'); return; }
+
+    setLoading(true);
+    errorBox.style.display = 'none';
+
+    const counts = {};
+    plateItems.forEach(i=>{ counts[i.foodId] = (counts[i.foodId]||0)+1; });
+    const ingredientLines = Object.keys(counts).map(id=>{
+      const f = FOODS.find(x=>x.id===id);
+      return '- '+f.name+' x'+counts[id];
+    }).join('\n');
+
+    const now = new Date();
+    const maand = now.toLocaleDateString('nl-NL', {month:'long'});
+
+    const prompt = 'Je bent een voedingsdeskundige en duurzaamheidsexpert. Analyseer onderstaand bord met eten voor iemand in Nederland, in de maand '+maand+'.\n\n'+
+      'INGREDIENTEN OP HET BORD:\n'+ingredientLines+'\n\n'+
+      'Geef ALLEEN een geldig JSON-object terug (geen markdown, geen uitleg) met exact deze vorm:\n'+
+      '{\n'+
+      '  "overall_health_score": number (0-100, hoe gezond en gebalanceerd is dit bord als maaltijd),\n'+
+      '  "health_summary": string (max 2 zinnen, Nederlands, concreet en vriendelijk),\n'+
+      '  "seasonal_score": number (0-100, percentage van het bord dat nu, in '+maand+', in het seizoen is in Nederland/Noordwest-Europa),\n'+
+      '  "seasonal_summary": string (max 2 zinnen, Nederlands),\n'+
+      '  "total_co2_kg": number (geschatte totale CO2-voetafdruk van dit bord in kg CO2-equivalent, redelijke schatting per portie),\n'+
+      '  "co2_summary": string (max 2 zinnen, Nederlands, met een tastbare vergelijking zoals km autorijden of aantal keer opladen van een telefoon),\n'+
+      '  "tip": string (1 korte, praktische tip in het Nederlands om dit bord gezonder of duurzamer te maken),\n'+
+      '  "items": [ { "name": string (zelfde naam als hierboven), "in_season": boolean, "co2_kg": number (geschatte CO2 van dit ingrediënt in kg CO2e voor de gegeven hoeveelheid) } ]\n'+
+      '}\n'+
+      'Zorg dat "items" exact één entry per ingrediëntregel hierboven bevat, in dezelfde volgorde.\n\n'+
+      'BELANGRIJK voor het veld "tip": varieer per bord en grijp niet standaard terug op "haal het vlees/de kip weg". '+
+      'Kies elke keer het meest relevante en behulpzame type tip voor dít specifieke bord — bijvoorbeeld over portiegrootte, bereidingswijze, kruiden of specerijen, een seizoensgebonden vervanger, het toevoegen van meer groente of vezels, bewaartips, of gewoon een compliment als het bord al gebalanceerd is. '+
+      'Stel alleen voor om een dierlijk product te verminderen of te vervangen als dat, gegeven de hoeveelheden op dit specifieke bord, ook echt de grootste concrete verbetering zou zijn — en als je dat doet, doe het onderbouwd en niet als automatische reflex.';
+
+    try{
+      const parsed = await geminiJSON(prompt, 0.4);
+      renderResults(parsed, counts);
+    }catch(err){
+      showError(err.message || String(err));
+    }finally{
+      setLoading(false);
+    }
+  });
+
+  function setLoading(on){
+    analyzeBtn.classList.toggle('loading', on);
+    plateWrap.classList.toggle('pulsing', on);
+    analyzeBtn.querySelector('.txt-idle').style.display = on ? 'none':'inline';
+    analyzeBtn.querySelector('.txt-loading').style.display = on ? 'inline':'none';
+    analyzeBtn.disabled = on || plateItems.length===0;
+  }
+
+  function showError(msg){
+    results.classList.add('show');
+    errorBox.style.display = 'flex';
+    errorBox.innerHTML = '<div class="error-box">⚠️ &nbsp;'+escapeHtml(msg)+'</div>';
+  }
+
+  function escapeHtml(s){
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function resetGauge(){
+    const c = 2*Math.PI*92;
+    rimGauge.style.strokeDasharray = c;
+    rimGauge.style.strokeDashoffset = c;
+    rimGauge.classList.remove('score-good','score-mid','score-low');
+  }
+  resetGauge();
+
+  function scoreClass(score){
+    if(score>=70) return 'score-good';
+    if(score>=40) return 'score-mid';
+    return 'score-low';
+  }
+
+  function renderResults(data, counts){
+    errorBox.style.display = 'none';
+    results.classList.add('show');
+
+    document.querySelectorAll('.result-grid .card, .tip-note').forEach(c=>{
+      c.style.animation = 'none'; c.offsetHeight; c.style.animation = '';
+    });
+
+    const health = Math.max(0, Math.min(100, Math.round(data.overall_health_score||0)));
+    const season = Math.max(0, Math.min(100, Math.round(data.seasonal_score||0)));
+    const co2 = (typeof data.total_co2_kg === 'number') ? data.total_co2_kg : 0;
+
+    document.getElementById('healthScore').textContent = health;
+    document.getElementById('healthSummary').textContent = data.health_summary || '—';
+    document.getElementById('seasonScore').textContent = season;
+    document.getElementById('seasonSummary').textContent = data.seasonal_summary || '—';
+    document.getElementById('co2Total').textContent = co2.toFixed(1);
+    document.getElementById('co2Summary').textContent = data.co2_summary || '—';
+
+    const tipEl = document.getElementById('tipNote');
+    if(data.tip){ tipEl.style.display='flex'; document.getElementById('tipText').textContent = data.tip; }
+    else{ tipEl.style.display='none'; }
+
+    const c = 2*Math.PI*92;
+    rimGauge.classList.remove('score-good','score-mid','score-low');
+    rimGauge.classList.add(scoreClass(health));
+    rimGauge.style.strokeDasharray = c;
+    rimGauge.style.strokeDashoffset = c;
+    requestAnimationFrame(()=>{
+      rimGauge.style.strokeDashoffset = c*(1-health/100);
+    });
+
+    const mc = 2*Math.PI*15;
+    const mini = document.getElementById('miniGaugeHealth');
+    mini.style.strokeDasharray = mc;
+    mini.style.strokeDashoffset = mc;
+    mini.style.transition = 'stroke-dashoffset 1s var(--ease) .2s';
+    requestAnimationFrame(()=>{ mini.style.strokeDashoffset = mc*(1-health/100); });
+
+    const bar = document.getElementById('seasonBar');
+    bar.style.width = '0%';
+    requestAnimationFrame(()=>{ bar.style.width = season+'%'; });
+
+    const list = document.getElementById('itemList');
+    list.innerHTML = '';
+    (data.items||[]).forEach((it, idx)=>{
+      const row = document.createElement('div');
+      row.className = 'item-row';
+      row.style.animationDelay = (0.05*idx)+'s';
+      const foodMatch = FOODS.find(f=> f.name.toLowerCase() === (it.name||'').toLowerCase());
+      const emo = foodMatch ? foodMatch.emo : '🍽️';
+      const qty = foodMatch && counts[foodMatch.id] > 1 ? ' ×'+counts[foodMatch.id] : '';
+      row.innerHTML =
+        '<span class="emo">'+emo+'</span>'+
+        '<span class="nm">'+escapeHtml(it.name||'')+qty+'</span>'+
+        '<span class="badge '+(it.in_season?'in':'out')+'">'+(it.in_season?'in seizoen':'niet in seizoen')+'</span>'+
+        '<span class="co2v">'+(typeof it.co2_kg==='number' ? it.co2_kg.toFixed(2)+' kg':'—')+'</span>';
+      list.appendChild(row);
+    });
+
+    results.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+
+  /* ================= NEW INGREDIENT VIA GEMINI ================= */
+  const addIngredientBtn = document.getElementById('addIngredientBtn');
+  const overlayIngredient = document.getElementById('overlayIngredient');
+  const closeIngModal = document.getElementById('closeIngModal');
+  const ingStep1 = document.getElementById('ingStep1');
+  const ingStep2 = document.getElementById('ingStep2');
+  const newFoodNameInput = document.getElementById('newFoodNameInput');
+  const askGeminiBtn = document.getElementById('askGeminiBtn');
+  const ingModalStatus = document.getElementById('ingModalStatus');
+  const ingModalStatus2 = document.getElementById('ingModalStatus2');
+  const ingConfirmName = document.getElementById('ingConfirmName');
+  const pvEmo = document.getElementById('pvEmo');
+  const pvName = document.getElementById('pvName');
+  const pvCat = document.getElementById('pvCat');
+  const newFoodCat = document.getElementById('newFoodCat');
+  const emojiGrid = document.getElementById('emojiGrid');
+  const customEmojiInput = document.getElementById('customEmojiInput');
+  const ingBackBtn = document.getElementById('ingBackBtn');
+  const confirmAddFoodBtn = document.getElementById('confirmAddFoodBtn');
+
+  const CAT_LABELS = {groenten:'Groenten', fruit:'Fruit', granen:'Granen', eiwit:'Eiwit & zuivel'};
+
+  function openIngredientModal(){
+    ingStep1.style.display = 'block';
+    ingStep2.style.display = 'none';
+    newFoodNameInput.value = '';
+    setIngStatus1('', '');
+    pendingNewFood = null;
+    overlayIngredient.classList.add('show');
+    newFoodNameInput.focus();
+  }
+  function closeIngredientModal(){ overlayIngredient.classList.remove('show'); }
+  addIngredientBtn.addEventListener('click', openIngredientModal);
+  closeIngModal.addEventListener('click', closeIngredientModal);
+  overlayIngredient.addEventListener('click', function(e){ if(e.target===overlayIngredient) closeIngredientModal(); });
+  ingBackBtn.addEventListener('click', function(){
+    ingStep2.style.display = 'none';
+    ingStep1.style.display = 'block';
+  });
+
+  function setIngStatus1(msg, kind){
+    ingModalStatus.textContent = msg;
+    ingModalStatus.className = 'modal-status'+(kind?(' '+kind):'');
+  }
+  function setIngStatus2(msg, kind){
+    ingModalStatus2.textContent = msg;
+    ingModalStatus2.className = 'modal-status'+(kind?(' '+kind):'');
+  }
+
+  function slugify(name){
+    return 'custom_'+name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')+'_'+Date.now();
+  }
+
+  askGeminiBtn.addEventListener('click', async function(){
+    const name = newFoodNameInput.value.trim();
+    if(!name){ setIngStatus1('Typ eerst een ingrediëntnaam.', 'err'); return; }
+    if(!apiKey || !model){ closeIngredientModal(); openModal(); setModalStatus('Stel eerst je API-sleutel in.', 'err'); return; }
+
+    askGeminiBtn.classList.add('loading');
+    askGeminiBtn.querySelector('.txt-idle').style.display = 'none';
+    askGeminiBtn.querySelector('.txt-loading').style.display = 'inline';
+    askGeminiBtn.disabled = true;
+    setIngStatus1('', '');
+
+    const prompt = 'Iemand wil het ingrediënt "'+name+'" toevoegen aan een Nederlandse voedsel-app met de categorieën groenten, fruit, granen, eiwit (eiwit & zuivel).\n'+
+      'Geef ALLEEN een geldig JSON-object terug (geen markdown) met exact deze vorm:\n'+
+      '{\n'+
+      '  "canonical_name": string (nette Nederlandse naam met hoofdletter, bijv. "Linzen"),\n'+
+      '  "category": string (één van: "groenten", "fruit", "granen", "eiwit" — kies de best passende),\n'+
+      '  "emoji_suggestions": array van 8 verschillende relevante of toepasselijke emoji-tekens voor dit ingrediënt, als losse strings\n'+
+      '}';
+
+    try{
+      const data = await geminiJSON(prompt, 0.3);
+      const cat = ['groenten','fruit','granen','eiwit'].indexOf(data.category)!==-1 ? data.category : 'groenten';
+      const canonicalName = (data.canonical_name || name).trim();
+      let suggestions = Array.isArray(data.emoji_suggestions) ? data.emoji_suggestions.filter(Boolean).slice(0,8) : [];
+      if(!suggestions.length) suggestions = EMOJI_FALLBACKS;
+
+      pendingNewFood = { id: slugify(canonicalName), name: canonicalName, cat: cat, emo: '' };
+
+      ingConfirmName.textContent = canonicalName;
+      pvName.textContent = canonicalName;
+      pvCat.textContent = CAT_LABELS[cat];
+      pvEmo.textContent = suggestions[0];
+      pendingNewFood.emo = suggestions[0];
+      newFoodCat.value = cat;
+      customEmojiInput.value = '';
+      setIngStatus2('', '');
+
+      emojiGrid.innerHTML = '';
+      suggestions.forEach((emo, idx)=>{
+        const opt = document.createElement('button');
+        opt.type = 'button';
+        opt.className = 'emoji-opt'+(idx===0?' selected':'');
+        opt.textContent = emo;
+        opt.addEventListener('click', function(){
+          document.querySelectorAll('.emoji-opt').forEach(o=>o.classList.remove('selected'));
+          opt.classList.add('selected');
+          pendingNewFood.emo = emo;
+          pvEmo.textContent = emo;
+          confirmAddFoodBtn.disabled = false;
+        });
+        emojiGrid.appendChild(opt);
+      });
+
+      newFoodCat.addEventListener('change', function(){
+        pendingNewFood.cat = newFoodCat.value;
+        pvCat.textContent = CAT_LABELS[newFoodCat.value];
+      });
+
+      confirmAddFoodBtn.disabled = false;
+      ingStep1.style.display = 'none';
+      ingStep2.style.display = 'block';
+    }catch(err){
+      setIngStatus1(err.message || String(err), 'err');
+    }finally{
+      askGeminiBtn.classList.remove('loading');
+      askGeminiBtn.querySelector('.txt-idle').style.display = 'inline';
+      askGeminiBtn.querySelector('.txt-loading').style.display = 'none';
+      askGeminiBtn.disabled = false;
+    }
+  });
+
+  customEmojiInput.addEventListener('input', function(){
+    const val = customEmojiInput.value.trim();
+    if(val){
+      document.querySelectorAll('.emoji-opt').forEach(o=>o.classList.remove('selected'));
+      pendingNewFood.emo = val;
+      pvEmo.textContent = val;
+      confirmAddFoodBtn.disabled = false;
+    }
+  });
+
+  confirmAddFoodBtn.addEventListener('click', function(){
+    if(!pendingNewFood || !pendingNewFood.emo) return;
+    pendingNewFood.cat = newFoodCat.value;
+    FOODS.push(pendingNewFood);
+    addFoodToDock(pendingNewFood);
+    addFoodToPlateRandom(pendingNewFood.id);
+    closeIngredientModal();
+    pendingNewFood = null;
+  });
+
+  /* ================= PREMIUM MODAL (niet-functioneel) ================= */
+  const overlayPremium = document.getElementById('overlayPremium');
+  const closePremiumModal = document.getElementById('closePremiumModal');
+  const upgradePremiumBtn = document.getElementById('upgradePremiumBtn');
+  const premiumModalStatus = document.getElementById('premiumModalStatus');
+
+  function openPremiumModal(){ premiumModalStatus.textContent=''; premiumModalStatus.className='modal-status'; overlayPremium.classList.add('show'); }
+  function closePremiumModalFn(){ overlayPremium.classList.remove('show'); }
+
+  premiumBtn.addEventListener('click', openPremiumModal);
+  premiumSideBtn.addEventListener('click', openPremiumModal);
+  closePremiumModal.addEventListener('click', closePremiumModalFn);
+  overlayPremium.addEventListener('click', function(e){ if(e.target===overlayPremium) closePremiumModalFn(); });
+  upgradePremiumBtn.addEventListener('click', function(){
+    premiumModalStatus.textContent = 'Premium is binnenkort beschikbaar — bedankt voor je interesse!';
+    premiumModalStatus.className = 'modal-status ok';
+  });
+
+  /* ================= ACCOUNT / SIGN-UP MODAL (Firebase Auth) ================= */
+  const overlayAccount = document.getElementById('overlayAccount');
+  const closeAccountModal = document.getElementById('closeAccountModal');
+  const authTabs = document.querySelectorAll('.auth-tab');
+  const authPanelLogin = document.getElementById('authPanelLogin');
+  const authPanelSignup = document.getElementById('authPanelSignup');
+  const authSubmitBtn = document.getElementById('authSubmitBtn');
+  const accountModalStatus = document.getElementById('accountModalStatus');
+  const accountModalTitle = document.getElementById('accountModalTitle');
+  const accountBtnLabel = document.getElementById('accountBtnLabel');
+  const accountBtnIcon = document.getElementById('accountBtnIcon');
+  const loginEmail = document.getElementById('loginEmail');
+  const loginPassword = document.getElementById('loginPassword');
+  const signupName = document.getElementById('signupName');
+  const signupEmail = document.getElementById('signupEmail');
+  const signupPassword = document.getElementById('signupPassword');
+  let authMode = 'login';
+  let currentUser = null;
+
+  const fb = window.__firebaseAuth;
+
+  function openAccountModal(){
+    // If already logged in, clicking the header button just logs out.
+    if(currentUser){
+      fb.signOut(fb.auth).catch(function(err){ console.error(err); });
+      return;
+    }
+    accountModalStatus.textContent=''; accountModalStatus.className='modal-status'; overlayAccount.classList.add('show');
+  }
+  function closeAccountModalFn(){ overlayAccount.classList.remove('show'); }
+
+  accountBtn.addEventListener('click', openAccountModal);
+  closeAccountModal.addEventListener('click', closeAccountModalFn);
+  overlayAccount.addEventListener('click', function(e){ if(e.target===overlayAccount) closeAccountModalFn(); });
+
+  authTabs.forEach(tab=>{
+    tab.addEventListener('click', function(){
+      authMode = tab.dataset.auth;
+      authTabs.forEach(t=> t.classList.toggle('active', t===tab));
+      authPanelLogin.classList.toggle('active', authMode==='login');
+      authPanelSignup.classList.toggle('active', authMode==='signup');
+      accountModalTitle.textContent = authMode==='login' ? 'Welkom terug' : 'Account aanmaken';
+      authSubmitBtn.textContent = authMode==='login' ? 'Inloggen' : 'Account aanmaken';
+      accountModalStatus.textContent = '';
+      accountModalStatus.className = 'modal-status';
+    });
+  });
+
+  function setAccountStatus(msg, ok){
+    accountModalStatus.textContent = msg;
+    accountModalStatus.className = 'modal-status' + (ok ? ' ok' : ' err');
+  }
+
+  function friendlyAuthError(err){
+    const code = err && err.code ? err.code : '';
+    switch(code){
+      case 'auth/invalid-email': return 'Dat e-mailadres ziet er niet geldig uit.';
+      case 'auth/missing-password':
+      case 'auth/weak-password': return 'Kies een wachtwoord van minstens 6 tekens.';
+      case 'auth/email-already-in-use': return 'Er bestaat al een account met dit e-mailadres.';
+      case 'auth/invalid-credential':
+      case 'auth/wrong-password':
+      case 'auth/user-not-found': return 'E-mailadres of wachtwoord klopt niet.';
+      case 'auth/too-many-requests': return 'Te veel pogingen — probeer het straks opnieuw.';
+      default: return 'Er ging iets mis. Probeer het nog eens.';
+    }
+  }
+
+  authSubmitBtn.addEventListener('click', async function(){
+    authSubmitBtn.disabled = true;
+    try{
+      if(authMode === 'login'){
+        const email = loginEmail.value.trim();
+        const pass = loginPassword.value;
+        if(!email || !pass){ setAccountStatus('Vul e-mailadres en wachtwoord in.', false); return; }
+        await fb.signInWithEmailAndPassword(fb.auth, email, pass);
+        setAccountStatus('Ingelogd!', true);
+        setTimeout(closeAccountModalFn, 600);
+      } else {
+        const name = signupName.value.trim();
+        const email = signupEmail.value.trim();
+        const pass = signupPassword.value;
+        if(!email || !pass){ setAccountStatus('Vul e-mailadres en wachtwoord in.', false); return; }
+        const cred = await fb.createUserWithEmailAndPassword(fb.auth, email, pass);
+        if(name){ await fb.updateProfile(cred.user, { displayName: name }); }
+        setAccountStatus('Account aangemaakt — je bent ingelogd!', true);
+        setTimeout(closeAccountModalFn, 600);
+      }
+    }catch(err){
+      console.error(err);
+      setAccountStatus(friendlyAuthError(err), false);
+    }finally{
+      authSubmitBtn.disabled = false;
+    }
+  });
+
+  fb.onAuthStateChanged(fb.auth, function(user){
+    currentUser = user;
+    if(user){
+      accountBtnIcon.textContent = '✅';
+      accountBtnLabel.textContent = user.displayName || user.email;
+      accountBtn.title = 'Uitloggen';
+      loadPlateForUser(user.uid);
+    } else {
+      accountBtnIcon.textContent = '👤';
+      accountBtnLabel.textContent = 'Inloggen';
+      accountBtn.title = '';
+      if(loadedPlateForUid){ clearPlateFromScreen(); uidCounter = 1; updateUIState(); loadedPlateForUid = null; }
+    }
+  });
+
+  /* ================= RECIPES: BASE ================= */
+  const recipeGrid = document.getElementById('recipeGrid');
+  BASE_RECIPES.forEach(r=>{
+    const card = document.createElement('div');
+    card.className = 'recipe-card';
+    card.innerHTML =
+      '<span class="emo">'+r.emoji+'</span>'+
+      '<h3>'+escapeHtml(r.title)+'</h3>'+
+      '<div class="meta"><span>⏱ '+r.time+' min</span><span>🍽 '+r.servings+' pers</span></div>'+
+      '<p class="teaser">'+escapeHtml(r.teaser)+'</p>'+
+      '<div class="expand-toggle"><span class="txt">Bekijk recept</span><span class="chev">▾</span></div>'+
+      '<div class="recipe-detail">'+
+        '<h4>Ingrediënten</h4>'+
+        '<ul>'+r.ingredients.map(i=>'<li>'+escapeHtml(i)+'</li>').join('')+'</ul>'+
+        '<h4>Bereiding</h4>'+
+        '<ol>'+r.steps.map(s=>'<li>'+escapeHtml(s)+'</li>').join('')+'</ol>'+
+      '</div>';
+    const toggle = card.querySelector('.expand-toggle');
+    toggle.addEventListener('click', function(){
+      card.classList.toggle('open');
+      toggle.querySelector('.txt').textContent = card.classList.contains('open') ? 'Verberg recept' : 'Bekijk recept';
+    });
+    recipeGrid.appendChild(card);
+  });
+
+  /* ================= RECIPES: GEMINI GENERATOR ================= */
+  const genTabs = document.querySelectorAll('.gen-tab');
+  const genPanelVrij = document.getElementById('genPanelVrij');
+  const genPanelInhuis = document.getElementById('genPanelInhuis');
+  const genWishInput = document.getElementById('genWishInput');
+  const genPantryInput = document.getElementById('genPantryInput');
+  const usePlateBtn = document.getElementById('usePlateBtn');
+  const generateRecipeBtn = document.getElementById('generateRecipeBtn');
+  const genResult = document.getElementById('genResult');
+  const genError = document.getElementById('genError');
+  const filterChips = document.querySelectorAll('.filter-chip');
+
+  genTabs.forEach(tab=>{
+    tab.addEventListener('click', function(){
+      genMode = tab.dataset.genmode;
+      genTabs.forEach(t=>t.classList.toggle('active', t===tab));
+      genPanelVrij.classList.toggle('active', genMode==='vrij');
+      genPanelInhuis.classList.toggle('active', genMode==='inhuis');
+    });
+  });
+
+  filterChips.forEach(chip=>{
+    chip.addEventListener('click', function(){
+      const f = chip.dataset.filter;
+      if(activeFilters.has(f)){ activeFilters.delete(f); chip.classList.remove('active'); }
+      else{ activeFilters.add(f); chip.classList.add('active'); }
+    });
+  });
+
+  usePlateBtn.addEventListener('click', function(){
+    if(!plateItems.length){
+      genPantryInput.value = '';
+      genPantryInput.placeholder = 'Je bord is nog leeg — leg er eerst wat eten op, of typ hier zelf ingrediënten.';
+      genPantryInput.focus();
+      return;
+    }
+    const counts = {};
+    plateItems.forEach(i=>{ counts[i.foodId] = (counts[i.foodId]||0)+1; });
+    const names = Object.keys(counts).map(id=>{
+      const f = FOODS.find(x=>x.id===id);
+      return f.name + (counts[id]>1 ? ' x'+counts[id] : '');
+    });
+    genPantryInput.value = names.join(', ');
+  });
+
+  function setGenLoading(on){
+    generateRecipeBtn.classList.toggle('loading', on);
+    generateRecipeBtn.querySelector('.txt-idle').style.display = on ? 'none' : 'inline';
+    generateRecipeBtn.querySelector('.txt-loading').style.display = on ? 'inline' : 'none';
+    generateRecipeBtn.disabled = on;
+  }
+
+  function showGenError(msg){
+    genError.style.display = 'block';
+    genError.innerHTML = '<div class="error-box">⚠️ &nbsp;'+escapeHtml(msg)+'</div>';
+  }
+
+  generateRecipeBtn.addEventListener('click', async function(){
+    if(!apiKey || !model){ openModal(); setModalStatus('Stel eerst je API-sleutel in.', 'err'); return; }
+
+    let prompt;
+    if(genMode==='vrij'){
+      const wish = genWishInput.value.trim();
+      if(!wish){ showGenError('Vertel eerst waar je zin in hebt.'); genWishInput.focus(); return; }
+      const filterLine = activeFilters.size ? ('Houd rekening met deze wensen: '+Array.from(activeFilters).join(', ')+'.\n') : '';
+      prompt = 'Je bent een chef die praktische, Nederlandse thuiskookrecepten schrijft.\n'+
+        'Bedenk een recept dat aansluit bij deze wens: "'+wish+'".\n'+filterLine+
+        'Geef ALLEEN een geldig JSON-object terug (geen markdown, geen uitleg) met exact deze vorm:\n'+
+        '{\n  "title": string,\n  "emoji": string (één representatief emoji-teken),\n  "time_minutes": number,\n  "servings": number,\n  "ingredients": array van strings (met hoeveelheid),\n  "steps": array van strings (elk één duidelijke stap in het Nederlands),\n  "note": string (optioneel, één korte kooktip in het Nederlands)\n}';
+    } else {
+      const pantry = genPantryInput.value.trim();
+      if(!pantry){ showGenError('Typ eerst wat ingrediënten, of gebruik de knop hierboven.'); genPantryInput.focus(); return; }
+      prompt = 'Je bent een chef. Iemand heeft deze ingrediënten in huis: '+pantry+'.\n'+
+        'Bedenk een lekker, praktisch Nederlands recept dat vooral deze ingrediënten gebruikt. Standaard basisproducten (zout, peper, olie, bloem, ui, knoflook) mag je aanvullen als dat nodig is.\n'+
+        'Geef ALLEEN een geldig JSON-object terug (geen markdown, geen uitleg) met exact deze vorm:\n'+
+        '{\n  "title": string,\n  "emoji": string (één representatief emoji-teken),\n  "time_minutes": number,\n  "servings": number,\n  "ingredients": array van strings (met hoeveelheid),\n  "steps": array van strings (elk één duidelijke stap in het Nederlands),\n  "note": string (optioneel, bijv. welke ingrediënten van de lijst zijn gebruikt of wat je kunt vervangen)\n}';
+    }
+
+    setGenLoading(true);
+    genError.style.display = 'none';
+
+    try{
+      const data = await geminiJSON(prompt, 0.6);
+      renderGenRecipe(data);
+    }catch(err){
+      showGenError(err.message || String(err));
+    }finally{
+      setGenLoading(false);
+    }
+  });
+
+  function renderGenRecipe(data){
+    genError.style.display = 'none';
+    const time = data.time_minutes || data.time || '—';
+    const servings = data.servings || '—';
+    const noteHtml = data.note ? '<div class="gen-note"><span class="em">👩‍🍳</span><span>'+escapeHtml(data.note)+'</span></div>' : '';
+    genResult.innerHTML =
+      '<div class="gen-recipe-card">'+
+        '<span class="emo">'+(data.emoji || '🍽️')+'</span>'+
+        '<h3>'+escapeHtml(data.title || 'Recept')+'</h3>'+
+        '<div class="meta"><span>⏱ '+escapeHtml(String(time))+' min</span><span>🍽 '+escapeHtml(String(servings))+' pers</span></div>'+
+        '<h4>Ingrediënten</h4>'+
+        '<ul>'+(data.ingredients||[]).map(i=>'<li>'+escapeHtml(i)+'</li>').join('')+'</ul>'+
+        '<h4>Bereiding</h4>'+
+        '<ol>'+(data.steps||[]).map(s=>'<li>'+escapeHtml(s)+'</li>').join('')+'</ol>'+
+        noteHtml+
+      '</div>';
+    genResult.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+
+  updateUIState();
+  updateKeyDot();
+})();
+</script>
+</body>
+</html>
