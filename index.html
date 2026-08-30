@@ -945,6 +945,9 @@
   }
   .recipe-detail ul{ list-style:none; margin:0; padding:0; }
   .recipe-detail li{ font-size:12.5px; padding:5px 0; border-bottom:1px dashed rgba(255,255,255,.08); }
+  .recipe-detail li.ing-item{ display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; }
+  .recipe-detail li.ing-item input[type="checkbox"]{ flex:0 0 auto; width:15px; height:15px; accent-color:var(--wheat); cursor:pointer; }
+  .recipe-detail li.ing-item.checked span.ing-text{ text-decoration:line-through; color:var(--muted); opacity:.65; }
   .recipe-detail ol{ margin:0; padding-left:18px; font-size:12.5px; line-height:1.65; color:var(--muted); }
   .recipe-detail ol li{ border:none; padding:3px 0; }
 
@@ -1022,6 +1025,12 @@
   }
   .gen-recipe-card ul{ list-style:none; margin:0 0 16px; padding:0; }
   .gen-recipe-card li{ font-size:12.5px; padding:5px 0; border-bottom:1px dashed rgba(255,255,255,.08); }
+  .gen-recipe-card li.ing-item{ display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; }
+  .gen-recipe-card li.ing-item input[type="checkbox"]{ flex:0 0 auto; width:15px; height:15px; accent-color:var(--wheat); cursor:pointer; }
+  .gen-recipe-card li.ing-item.checked span.ing-text{ text-decoration:line-through; color:var(--muted); opacity:.65; }
+  li.ing-item{ display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; font-size:12.5px; padding:5px 0; border-bottom:1px dashed rgba(255,255,255,.08); list-style:none; }
+  li.ing-item input[type="checkbox"]{ flex:0 0 auto; width:15px; height:15px; accent-color:var(--wheat); cursor:pointer; }
+  li.ing-item.checked span.ing-text{ text-decoration:line-through; color:var(--muted); opacity:.65; }
   .gen-recipe-card ol{ margin:0; padding-left:18px; font-size:12.5px; line-height:1.65; color:var(--muted); }
   .gen-recipe-card .gen-note{
     margin-top:16px;
@@ -1222,10 +1231,17 @@
             <li><span>Meest gebruikt</span><span id="statTop">—</span></li>
           </ul>
         </div>
-        <div class="widget-card premium-teaser">
+        <div class="widget-card premium-teaser" id="premiumTeaserWidget">
           <h3>✨ Aan Tafel Premium</h3>
-          <p>Wekelijkse boodschappenlijst, dagelijkse voedingswaarden en onbeperkt Gemini-aanvragen.</p>
+          <p>Wekelijkse boodschappenlijst, bewaarde bordjes en onbeperkt Gemini-aanvragen — eenmalig €4,99, voor altijd.</p>
           <button class="btn-ghost" id="premiumSideBtn" type="button">Meer info</button>
+        </div>
+        <div class="widget-card" id="groceryWidget" style="display:none;">
+          <h3>📝 Boodschappenlijst</h3>
+          <p style="font-size:12.5px; color:var(--muted); margin:0 0 10px;">Gebaseerd op je bewaarde recepten van deze week.</p>
+          <button class="btn-ghost" id="groceryListBtn" type="button">Genereer lijst</button>
+          <div class="modal-status" id="groceryStatus" style="margin-top:8px;"></div>
+          <ul class="stat-list" id="groceryList" style="margin-top:10px;"></ul>
         </div>
       </aside>
     </main>
@@ -1290,7 +1306,7 @@
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <button class="close-x" id="closeModal" aria-label="Sluiten">✕</button>
     <h2 id="modalTitle">Gemini API-sleutel</h2>
-    <p class="desc">Nodig om je bord te analyseren, ingrediënten toe te voegen en recepten te genereren. Haal gratis een sleutel op bij <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a>. Je sleutel wordt alleen in deze sessie onthouden — na herladen moet je hem opnieuw invullen.</p>
+    <p class="desc">Nodig om je bord te analyseren, ingrediënten toe te voegen en recepten te genereren. Haal gratis een sleutel op bij <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a>. Je sleutel wordt, als je bent ingelogd, veilig bij je account bewaard.</p>
     <label for="apiKeyInput">API-sleutel</label>
     <input type="password" id="apiKeyInput" placeholder="AIza…" autocomplete="off" spellcheck="false">
     <label for="modelSelect">Model</label>
@@ -1360,11 +1376,11 @@
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="premiumModalTitle" style="max-width:500px;">
     <button class="close-x" id="closePremiumModal" aria-label="Sluiten">✕</button>
     <h2 id="premiumModalTitle">Ga Premium ✨</h2>
-    <p class="desc">Haal meer uit Aan Tafel met slimmere boodschappenlijstjes en onbeperkte AI-hulp.</p>
+    <p class="desc">Eén keer betalen, voor altijd Premium — geen abonnement, geen gedoe. Haal alles uit Aan Tafel: je bordjes en recepten blijven bewaard, je krijgt elke week een kant-en-klare boodschappenlijst, en je hoeft nooit meer zelf een API-sleutel te knutselen.</p>
     <div class="pricing-grid">
       <div class="price-card">
         <div class="tier-name">Gratis</div>
-        <div class="tier-price">€0 <span>/ maand</span></div>
+        <div class="tier-price">€0</div>
         <ul>
           <li><span class="ck">✓</span> Bord bouwen &amp; analyseren</li>
           <li><span class="ck">✓</span> 6 basisrecepten</li>
@@ -1372,24 +1388,31 @@
         </ul>
       </div>
       <div class="price-card highlight">
-        <span class="badge-pro">Populair</span>
+        <span class="badge-pro">Eenmalig</span>
         <div class="tier-name">Premium</div>
-        <div class="tier-price">€4,99 <span>/ maand</span></div>
+        <div class="tier-price">€4,99 <span>eenmalig</span></div>
         <ul>
           <li><span class="ck">✓</span> Alles uit Gratis</li>
+          <li><span class="ck">✓</span> Bewaar je bord automatisch</li>
           <li><span class="ck">✓</span> Wekelijkse boodschappenlijst</li>
-          <li><span class="ck">✓</span> Dagelijkse voedingswaarden</li>
           <li><span class="ck">✓</span> Onbeperkt Gemini-aanvragen, geen eigen sleutel nodig</li>
-          <li><span class="ck">✓</span> Bewaar bordjes &amp; recepten</li>
+          <li><span class="ck">✓</span> Voor altijd — geen abonnement</li>
         </ul>
       </div>
     </div>
     <div class="modal-status" id="premiumModalStatus"></div>
     <div class="modal-actions">
       <button class="btn-primary" id="upgradePremiumBtn" type="button" style="background:linear-gradient(180deg,var(--wheat),var(--wheat-deep)); box-shadow:0 10px 22px -8px rgba(199,154,62,.5); color:#2b2117;">
-        Upgrade naar Premium
+        Eenmalig €4,99 — voor altijd Premium
       </button>
     </div>
+    <details style="margin-top:14px;">
+      <summary style="cursor:pointer; font-size:12.5px; color:var(--muted);">Heb je een code?</summary>
+      <div style="display:flex; gap:8px; margin-top:10px;">
+        <input type="text" id="premiumCodeInput" placeholder="Code" autocomplete="off" style="flex:1;">
+        <button class="btn-ghost" id="redeemCodeBtn" type="button">Inwisselen</button>
+      </div>
+    </details>
   </div>
 </div>
 
@@ -1470,6 +1493,33 @@
       return __db.collection('users').doc(uid).get().then(function(doc){
         return doc.exists ? doc.data() : null;
       });
+    },
+    saveApiKey: function(uid, apiKey, model){
+      return __db.collection('users').doc(uid).set({
+        apiKey: apiKey,
+        model: model
+      }, { merge: true });
+    },
+    saveRecipe: function(uid, recipe){
+      return __db.collection('users').doc(uid).collection('recipes').add(Object.assign({}, recipe, {
+        savedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }));
+    },
+    setPremium: function(uid, isPremium){
+      return __db.collection('users').doc(uid).set({ isPremium: isPremium }, { merge: true });
+    },
+    getConfig: function(){
+      return __db.collection('config').doc('app').get().then(function(doc){
+        return doc.exists ? doc.data() : null;
+      });
+    },
+    getRecentRecipes: function(uid, max){
+      return __db.collection('users').doc(uid).collection('recipes')
+        .orderBy('savedAt', 'desc').limit(max || 10).get().then(function(snap){
+          const out = [];
+          snap.forEach(function(doc){ out.push(doc.data()); });
+          return out;
+        });
     }
   };
 </script>
@@ -1591,6 +1641,7 @@
   /* ================= STATE ================= */
   let apiKey = "";
   let model = "";
+  let isPremium = false;
   let plateItems = []; // {uid, foodId, xPct, yPct, rot}
   let uidCounter = 1;
 
@@ -1600,7 +1651,7 @@
   let loadedPlateForUid = null; // voorkomt dat we net-geladen data meteen weer wegschrijven
 
   function schedulePlateSave(){
-    if(!currentUser) return; // niet ingelogd → niets bewaren
+    if(!currentUser || !isPremium) return; // alleen Premium-gebruikers: bord bewaren
     clearTimeout(plateSaveTimer);
     plateSaveTimer = setTimeout(function(){
       fs.savePlate(currentUser.uid, plateItems, uidCounter).catch(function(err){
@@ -1619,6 +1670,20 @@
 
   function loadPlateForUser(uid){
     fs.loadPlate(uid).then(function(data){
+      isPremium = !!(data && data.isPremium);
+      updateSettingsHub();
+
+      if(data && data.apiKey){
+        apiKey = data.apiKey;
+        model = data.model || '';
+        apiKeyInput.value = apiKey;
+        refreshModelList(true);
+      }
+
+      if(!isPremium){
+        return; // Gratis account: bord opslaan/laden is een Premium-functie
+      }
+
       clearPlateFromScreen();
       if(data && Array.isArray(data.plateItems)){
         data.plateItems.forEach(function(item){
@@ -1966,6 +2031,14 @@
     schedulePlateSave();
   });
 
+  /* ================= SETTINGS HUB (verwijderd; direct API-sleutel modal) ================= */
+  function updateSettingsHub(){
+    const teaser = document.getElementById('premiumTeaserWidget');
+    const grocery = document.getElementById('groceryWidget');
+    if(teaser) teaser.style.display = isPremium ? 'none' : '';
+    if(grocery) grocery.style.display = isPremium ? '' : 'none';
+  }
+
   /* ================= SETTINGS MODAL ================= */
   function openModal(){
     overlay.classList.add('show');
@@ -1981,6 +2054,10 @@
     const val = apiKeyInput.value.trim();
     if(!val){ setModalStatus('Vul een geldige sleutel in.', 'err'); return; }
     apiKey = val;
+    await refreshModelList(false);
+  });
+
+  async function refreshModelList(silent){
     setModalStatus('Modellen laden…', '');
     modelSelect.innerHTML = '<option value="">Laden…</option>';
     try{
@@ -2014,12 +2091,15 @@
       modelSelect.value = model;
       setModalStatus('Sleutel werkt — '+list.length+' model(len) gevonden.', 'ok');
       updateKeyDot();
+      if(currentUser){
+        fs.saveApiKey(currentUser.uid, apiKey, model).catch(function(err){ console.error('Opslaan van API-sleutel mislukt:', err); });
+      }
     }catch(err){
-      setModalStatus('Kon geen verbinding maken. Controleer je sleutel. ('+err.message+')', 'err');
+      if(!silent) setModalStatus('Kon geen verbinding maken. Controleer je sleutel. ('+err.message+')', 'err');
       modelSelect.innerHTML = '<option value="">— opnieuw proberen —</option>';
       updateKeyDot();
     }
-  });
+  }
 
   modelSelect.addEventListener('change', function(){ model = modelSelect.value; });
 
@@ -2032,12 +2112,30 @@
     const ready = !!(apiKey && model);
     keyDot.classList.toggle('ok', ready);
     settingsLabel.textContent = ready ? 'API-sleutel actief' : 'API-sleutel instellen';
+    updateSettingsHub();
   }
 
   /* ================= GEMINI HELPER ================= */
+  /* ================= GEDEELDE GEMINI-SLEUTEL VOOR PREMIUM ================= */
+  let sharedApiKey = '';
+  let sharedModel = '';
+  fs.getConfig().then(function(cfg){
+    if(cfg){ sharedApiKey = cfg.geminiApiKey || ''; sharedModel = cfg.geminiModel || ''; }
+  }).catch(function(err){ console.error('Kon gedeelde config niet laden:', err); });
+
+  function hasGeminiAccess(){
+    return !!((apiKey && model) || (isPremium && sharedApiKey && sharedModel));
+  }
+  function effectiveCreds(){
+    if(apiKey && model) return { key: apiKey, model: model };
+    if(isPremium && sharedApiKey && sharedModel) return { key: sharedApiKey, model: sharedModel };
+    return { key: '', model: '' };
+  }
+
   async function geminiJSON(prompt, temperature){
     if(temperature===undefined) temperature = 0.4;
-    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent?key='+encodeURIComponent(apiKey), {
+    const creds = effectiveCreds();
+    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+creds.model+':generateContent?key='+encodeURIComponent(creds.key), {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
@@ -2048,7 +2146,7 @@
     if(!res.ok){
       const t = await res.text().catch(()=>'');
       if(res.status===404){
-        throw new Error('Model "'+model+'" is niet (meer) beschikbaar. Open de instellingen en kies een ander model uit de lijst.');
+        throw new Error('Model "'+creds.model+'" is niet (meer) beschikbaar. Open de instellingen en kies een ander model uit de lijst.');
       }
       throw new Error('API-fout ('+res.status+'). '+t.slice(0,180));
     }
@@ -2062,7 +2160,7 @@
   /* ================= ANALYZE PLATE ================= */
   analyzeBtn.addEventListener('click', async function(){
     if(!plateItems.length) return;
-    if(!apiKey || !model){ openModal(); setModalStatus('Stel eerst je API-sleutel in.', 'err'); return; }
+    if(!hasGeminiAccess()){ openModal(); setModalStatus(isPremium ? 'Even geduld, de Gemini-toegang wordt geladen — probeer het zo nog eens, of vul je eigen sleutel in.' : 'Stel eerst je API-sleutel in.', 'err'); return; }
 
     setLoading(true);
     errorBox.style.display = 'none';
@@ -2123,6 +2221,21 @@
     const d = document.createElement('div');
     d.textContent = s;
     return d.innerHTML;
+  }
+
+  function ingredientChecklistHtml(items){
+    return '<ul>'+items.map(function(i){
+      return '<li class="ing-item"><input type="checkbox"><span class="ing-text">'+escapeHtml(i)+'</span></li>';
+    }).join('')+'</ul>';
+  }
+  function wireChecklist(root){
+    root.querySelectorAll('li.ing-item').forEach(function(li){
+      const cb = li.querySelector('input[type="checkbox"]');
+      li.addEventListener('click', function(e){
+        if(e.target!==cb) cb.checked = !cb.checked;
+        li.classList.toggle('checked', cb.checked);
+      });
+    });
   }
 
   function resetGauge(){
@@ -2258,7 +2371,7 @@
   askGeminiBtn.addEventListener('click', async function(){
     const name = newFoodNameInput.value.trim();
     if(!name){ setIngStatus1('Typ eerst een ingrediëntnaam.', 'err'); return; }
-    if(!apiKey || !model){ closeIngredientModal(); openModal(); setModalStatus('Stel eerst je API-sleutel in.', 'err'); return; }
+    if(!hasGeminiAccess()){ closeIngredientModal(); openModal(); setModalStatus(isPremium ? 'Even geduld, de Gemini-toegang wordt geladen — probeer het zo nog eens, of vul je eigen sleutel in.' : 'Stel eerst je API-sleutel in.', 'err'); return; }
 
     askGeminiBtn.classList.add('loading');
     askGeminiBtn.querySelector('.txt-idle').style.display = 'none';
@@ -2346,11 +2459,13 @@
     pendingNewFood = null;
   });
 
-  /* ================= PREMIUM MODAL (niet-functioneel) ================= */
+  /* ================= PREMIUM MODAL ================= */
   const overlayPremium = document.getElementById('overlayPremium');
   const closePremiumModal = document.getElementById('closePremiumModal');
   const upgradePremiumBtn = document.getElementById('upgradePremiumBtn');
   const premiumModalStatus = document.getElementById('premiumModalStatus');
+  const premiumCodeInput = document.getElementById('premiumCodeInput');
+  const redeemCodeBtn = document.getElementById('redeemCodeBtn');
 
   function openPremiumModal(){ premiumModalStatus.textContent=''; premiumModalStatus.className='modal-status'; overlayPremium.classList.add('show'); }
   function closePremiumModalFn(){ overlayPremium.classList.remove('show'); }
@@ -2359,9 +2474,39 @@
   premiumSideBtn.addEventListener('click', openPremiumModal);
   closePremiumModal.addEventListener('click', closePremiumModalFn);
   overlayPremium.addEventListener('click', function(e){ if(e.target===overlayPremium) closePremiumModalFn(); });
-  upgradePremiumBtn.addEventListener('click', function(){
-    premiumModalStatus.textContent = 'Premium is binnenkort beschikbaar — bedankt voor je interesse!';
+
+  function grantPremium(){
+    if(!currentUser){
+      premiumModalStatus.textContent = 'Log eerst in om Premium te activeren.';
+      premiumModalStatus.className = 'modal-status err';
+      return;
+    }
+    isPremium = true;
+    fs.setPremium(currentUser.uid, true).catch(function(err){ console.error(err); });
+    updateSettingsHub();
+    premiumModalStatus.textContent = 'Welkom bij Premium! 🎉 Je bord wordt vanaf nu bewaard en je hebt onbeperkt Gemini-toegang.';
     premiumModalStatus.className = 'modal-status ok';
+  }
+
+  upgradePremiumBtn.addEventListener('click', function(){
+    if(!currentUser){
+      premiumModalStatus.textContent = 'Log eerst in om te upgraden.';
+      premiumModalStatus.className = 'modal-status err';
+      return;
+    }
+    premiumModalStatus.textContent = 'Online betalen kan nog niet — dat komt eraan. Heb je een code gekregen? Vul die hieronder in.';
+    premiumModalStatus.className = 'modal-status';
+  });
+
+  redeemCodeBtn.addEventListener('click', function(){
+    const code = premiumCodeInput.value.trim();
+    if(code === '8866'){
+      grantPremium();
+      premiumCodeInput.value = '';
+    } else {
+      premiumModalStatus.textContent = 'Die code klopt niet.';
+      premiumModalStatus.className = 'modal-status err';
+    }
   });
 
   /* ================= ACCOUNT / SIGN-UP MODAL (Firebase Auth) ================= */
@@ -2472,7 +2617,9 @@
       accountBtnLabel.textContent = 'Inloggen';
       accountBtn.title = '';
       if(loadedPlateForUid){ clearPlateFromScreen(); uidCounter = 1; updateUIState(); loadedPlateForUid = null; }
+      isPremium = false;
     }
+    updateSettingsHub();
   });
 
   /* ================= RECIPES: BASE ================= */
@@ -2488,7 +2635,7 @@
       '<div class="expand-toggle"><span class="txt">Bekijk recept</span><span class="chev">▾</span></div>'+
       '<div class="recipe-detail">'+
         '<h4>Ingrediënten</h4>'+
-        '<ul>'+r.ingredients.map(i=>'<li>'+escapeHtml(i)+'</li>').join('')+'</ul>'+
+        ingredientChecklistHtml(r.ingredients)+
         '<h4>Bereiding</h4>'+
         '<ol>'+r.steps.map(s=>'<li>'+escapeHtml(s)+'</li>').join('')+'</ol>'+
       '</div>';
@@ -2497,6 +2644,7 @@
       card.classList.toggle('open');
       toggle.querySelector('.txt').textContent = card.classList.contains('open') ? 'Verberg recept' : 'Bekijk recept';
     });
+    wireChecklist(card);
     recipeGrid.appendChild(card);
   });
 
@@ -2558,7 +2706,7 @@
   }
 
   generateRecipeBtn.addEventListener('click', async function(){
-    if(!apiKey || !model){ openModal(); setModalStatus('Stel eerst je API-sleutel in.', 'err'); return; }
+    if(!hasGeminiAccess()){ openModal(); setModalStatus(isPremium ? 'Even geduld, de Gemini-toegang wordt geladen — probeer het zo nog eens, of vul je eigen sleutel in.' : 'Stel eerst je API-sleutel in.', 'err'); return; }
 
     let prompt;
     if(genMode==='vrij'){
@@ -2596,19 +2744,91 @@
     const time = data.time_minutes || data.time || '—';
     const servings = data.servings || '—';
     const noteHtml = data.note ? '<div class="gen-note"><span class="em">👩‍🍳</span><span>'+escapeHtml(data.note)+'</span></div>' : '';
+    const saveBtnHtml = '<div class="modal-status" id="saveRecipeStatus" style="margin:0 0 10px;"></div>'+
+      '<button class="btn-ghost" id="saveRecipeBtn" type="button" style="margin-bottom:14px;">💾 Bewaar recept</button>';
     genResult.innerHTML =
       '<div class="gen-recipe-card">'+
         '<span class="emo">'+(data.emoji || '🍽️')+'</span>'+
         '<h3>'+escapeHtml(data.title || 'Recept')+'</h3>'+
         '<div class="meta"><span>⏱ '+escapeHtml(String(time))+' min</span><span>🍽 '+escapeHtml(String(servings))+' pers</span></div>'+
         '<h4>Ingrediënten</h4>'+
-        '<ul>'+(data.ingredients||[]).map(i=>'<li>'+escapeHtml(i)+'</li>').join('')+'</ul>'+
+        ingredientChecklistHtml(data.ingredients||[])+
         '<h4>Bereiding</h4>'+
         '<ol>'+(data.steps||[]).map(s=>'<li>'+escapeHtml(s)+'</li>').join('')+'</ol>'+
         noteHtml+
+        saveBtnHtml+
       '</div>';
+    wireChecklist(genResult);
+
+    const saveBtn = document.getElementById('saveRecipeBtn');
+    const saveStatus = document.getElementById('saveRecipeStatus');
+    saveBtn.addEventListener('click', function(){
+      if(!currentUser){
+        saveStatus.textContent = 'Log in om recepten te bewaren.';
+        saveStatus.className = 'modal-status err';
+        return;
+      }
+      saveBtn.disabled = true;
+      fs.saveRecipe(currentUser.uid, data).then(function(){
+        saveStatus.textContent = 'Recept bewaard! ✅';
+        saveStatus.className = 'modal-status ok';
+      }).catch(function(err){
+        console.error(err);
+        saveStatus.textContent = 'Bewaren mislukt, probeer het nog eens.';
+        saveStatus.className = 'modal-status err';
+      }).finally(function(){
+        saveBtn.disabled = false;
+      });
+    });
+
     genResult.scrollIntoView({behavior:'smooth', block:'nearest'});
   }
+
+  /* ================= PREMIUM: WEKELIJKSE BOODSCHAPPENLIJST ================= */
+  const groceryListBtn = document.getElementById('groceryListBtn');
+  const groceryStatus = document.getElementById('groceryStatus');
+  const groceryList = document.getElementById('groceryList');
+
+  groceryListBtn.addEventListener('click', async function(){
+    if(!isPremium || !currentUser){ openPremiumModal(); return; }
+    groceryListBtn.disabled = true;
+    groceryStatus.textContent = 'Recepten verzamelen…';
+    groceryStatus.className = 'modal-status';
+    groceryList.innerHTML = '';
+    try{
+      const recipes = await fs.getRecentRecipes(currentUser.uid, 10);
+      if(!recipes.length){
+        groceryStatus.textContent = 'Je hebt nog geen recepten bewaard. Bewaar er eerst een paar bij de recepten van Gemini.';
+        groceryStatus.className = 'modal-status err';
+        return;
+      }
+      if(!hasGeminiAccess()){
+        groceryStatus.textContent = 'Gemini-toegang niet beschikbaar. Probeer het zo nog eens.';
+        groceryStatus.className = 'modal-status err';
+        return;
+      }
+      const allIngredients = recipes.map(r => (r.ingredients||[]).join(', ')).join('\n');
+      const prompt = 'Dit zijn de ingrediëntenlijsten van een aantal recepten die iemand deze week wil koken:\n'+allIngredients+'\n\n'+
+        'Maak hier één overzichtelijke boodschappenlijst van in het Nederlands: combineer dezelfde ingrediënten en tel hoeveelheden bij elkaar op waar dat kan.\n'+
+        'Geef ALLEEN een geldig JSON-object terug (geen markdown, geen uitleg) met exact deze vorm:\n'+
+        '{\n  "items": array van strings (elk item met hoeveelheid, bijv. "300 g kipfilet")\n}';
+      const data = await geminiJSON(prompt, 0.3);
+      const items = (data && data.items) || [];
+      if(!items.length){ groceryStatus.textContent = 'Geen boodschappenlijst ontvangen, probeer het nog eens.'; groceryStatus.className = 'modal-status err'; return; }
+      groceryStatus.textContent = 'Klaar!';
+      groceryStatus.className = 'modal-status ok';
+      groceryList.innerHTML = items.map(function(i){
+        return '<li class="ing-item"><input type="checkbox"><span class="ing-text">'+escapeHtml(i)+'</span></li>';
+      }).join('');
+      wireChecklist(groceryList);
+    }catch(err){
+      console.error(err);
+      groceryStatus.textContent = 'Er ging iets mis: '+(err.message||err);
+      groceryStatus.className = 'modal-status err';
+    }finally{
+      groceryListBtn.disabled = false;
+    }
+  });
 
   updateUIState();
   updateKeyDot();
